@@ -1,0 +1,35 @@
+from sc_client.constants import sc_type
+from sc_client.models import ScTemplate, ScAddr
+from sc_client.client import search_by_template
+
+from sc_kpm import ScKeynodes
+from sc_kpm.utils import get_link_content_data
+
+from typing import List
+
+
+def get_themes_from_set(set: ScAddr) -> List[ScAddr]:
+    templ = ScTemplate()
+    templ.triple(
+        set,
+        sc_type.VAR_PERM_POS_ARC,
+        (sc_type.VAR_NODE, "theme")
+    )
+    search_results = search_by_template(templ)
+
+    themes = []
+    for el in search_results:
+        themes.append(el.get("theme"))
+    return themes
+
+def get_name_of_theme(theme: ScAddr) -> str:
+    templ = ScTemplate()
+    templ.quintuple(
+            theme,
+            sc_type.VAR_COMMON_ARC,
+            (sc_type.VAR_NODE_LINK, "name"),
+            sc_type.VAR_PERM_POS_ARC,
+            ScKeynodes("nrel_name_studied_themes", sc_type.CONST_NODE_NON_ROLE)
+        )
+    name = str(get_link_content_data(search_by_template(templ)[0].get("name")))
+    return name
