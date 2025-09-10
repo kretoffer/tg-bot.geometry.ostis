@@ -15,4 +15,4 @@ bot = Bot(token=config('TOKEN'), default=DefaultBotProperties(parse_mode=ParseMo
 dp = Dispatcher(storage=MemoryStorage())
 
 url = "ws://localhost:8090/ws_json"
-#connect(url)
+connect(url)
