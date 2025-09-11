@@ -33,3 +33,8 @@ def get_name_of_theme(theme: ScAddr) -> str:
         )
     name = str(get_link_content_data(search_by_template(templ)[0].get("name")))
     return name
+
+
+async def get_themes_list() -> list:
+    ... # TODO получение списка тем из БЗ
+    return [f"theme {i}" for i in range(1, 51)] # заглушка

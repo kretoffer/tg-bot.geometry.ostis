@@ -6,6 +6,8 @@ from handlers.start import start_router
 from handlers.diagnostic_test import diagnostic_test_router
 from handlers.handbook import handbook_router
 from handlers.personal_account import personal_accaunt_router
+from handlers.reflection import reflection_router
+from handlers.themes_page import themes_page_router
 
 
 async def main():
@@ -13,6 +15,8 @@ async def main():
     dp.include_router(diagnostic_test_router)
     dp.include_router(handbook_router)
     dp.include_router(personal_accaunt_router)
+    dp.include_router(reflection_router)
+    dp.include_router(themes_page_router)
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 

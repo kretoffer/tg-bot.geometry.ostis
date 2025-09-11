@@ -9,7 +9,7 @@ from utils.get_rating import get_self_rating, get_system_rating
 from utils.themes import get_themes_from_set, get_name_of_theme
 from shemes.user import User, Rating
 
-from typing import Optional, List
+from typing import Optional
 
 
 def get_user(user_id: int) -> ScAddr:
@@ -115,3 +115,31 @@ def get_user_info(user_id: int) -> Optional[User]:
         get_rating(get_self_rating(user)),
         get_rating(get_system_rating(user))
     )
+
+
+async def check_user_in_sc_machine(user_id: int) -> bool:
+    if user := get_user(user_id):
+        raiting = get_system_rating(user)
+        templ = ScTemplate()
+        templ.quintuple(
+            (sc_type.VAR_NODE, "_knowledge_level_info"),
+            sc_type.VAR_ACTUAL_TEMP_POS_ARC,
+            raiting,
+            sc_type.VAR_PERM_POS_ARC,
+            ScKeynodes("rrel_student", sc_type.CONST_NODE_ROLE)
+        )
+        templ.quintuple(
+            "_knowledge_level_info",
+            (sc_type.VAR_ACTUAL_TEMP_POS_ARC, "_arc_to_knowledge_level"),
+            (sc_type.VAR_NODE, "_knowledge_level"),
+            sc_type.VAR_ACTUAL_TEMP_POS_ARC,
+            ScKeynodes("rrel_knowledge_level", sc_type.CONST_NODE_ROLE)
+        )
+        if search_by_template(templ):
+            return True
+    return False
+
+
+async def get_reflection_results(user_id: int):
+    # TODO Получение результатов рефлексии
+    return "Результаты рефлексии"

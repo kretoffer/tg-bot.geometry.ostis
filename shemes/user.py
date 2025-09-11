@@ -29,7 +29,7 @@ class User:
     system_rating: Rating
 
     def __str__(self):
-        return f"*{self.name}*\n" \
+        return f"*{self.name}*\n\n" \
                 f"ID: {self.id}\n" \
                 f"Класс: {self.user_class}\n" \
                 f"Получено достижений: {len(self.achievements)}\n\n" \
