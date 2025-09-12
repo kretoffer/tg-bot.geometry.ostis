@@ -21,13 +21,11 @@ def get_user(user_id: int) -> ScAddr:
     templ.quintuple(
         (sc_type.VAR_NODE, "user"),
         sc_type.VAR_COMMON_ARC,
-        link_user_id,
+        sc_type.VAR_NODE_LINK,#link_user_id,
         sc_type.VAR_PERM_POS_ARC,
         ScKeynodes.resolve("nrel_tg_id", sc_type.NODE_NON_ROLE)
     )
-    print(search_by_template(templ))
     if search_results := search_by_template(templ):
-        print(search_results)
         return search_results[0].get("user")
     return ScAddr()
 
@@ -41,7 +39,7 @@ def get_rating(rating: ScAddr) -> Optional[Rating]:
         sc_type.VAR_ACTUAL_TEMP_POS_ARC,
         rating,
         sc_type.VAR_PERM_POS_ARC,
-        ScKeynodes("rrel_student", sc_type.CONST_NODE_ROLE)
+        ScKeynodes.resolve("rrel_student", sc_type.CONST_NODE_ROLE)
     )
 
     templ.quintuple(
@@ -49,7 +47,7 @@ def get_rating(rating: ScAddr) -> Optional[Rating]:
         (sc_type.VAR_ACTUAL_TEMP_POS_ARC, "_arc_to_knowledge_level"),
         (sc_type.VAR_NODE, "_knowledge_level"),
         sc_type.VAR_PERM_POS_ARC,
-        ScKeynodes("rrel_knowledge_level", sc_type.CONST_NODE_ROLE)
+        ScKeynodes.resolve("rrel_knowledge_level", sc_type.CONST_NODE_ROLE)
     )
     knowledge_level = None
     if search_results := search_by_template(templ):
@@ -61,7 +59,7 @@ def get_rating(rating: ScAddr) -> Optional[Rating]:
         sc_type.VAR_COMMON_ARC,
         (sc_type.VAR_NODE, "themes"),
         sc_type.VAR_PERM_POS_ARC,
-        ScKeynodes("nrel_worth_studied_themes", sc_type.CONST_NODE_NON_ROLE)
+        ScKeynodes.resolve("nrel_worth_studied_themes", sc_type.CONST_NODE_NON_ROLE)
     )
     worth_studied_themes_set = search_by_template(templ)[0].get("themes")
     templ.quintuple(
@@ -69,7 +67,7 @@ def get_rating(rating: ScAddr) -> Optional[Rating]:
         sc_type.VAR_COMMON_ARC,
         (sc_type.VAR_NODE, "themes"),
         sc_type.VAR_PERM_POS_ARC,
-        ScKeynodes("nrel_well_studied_themes", sc_type.CONST_NODE_NON_ROLE)
+        ScKeynodes.resolve("nrel_well_studied_themes", sc_type.CONST_NODE_NON_ROLE)
     )
     well_studied_themes_set = search_by_template(templ)[0].get("themes")
     worth_studied_themes = [get_name_of_theme(theme) for theme in get_themes_from_set(worth_studied_themes_set)]
@@ -122,18 +120,18 @@ async def check_user_in_sc_machine(user_id: int) -> bool:
         raiting = get_system_rating(user)
         templ = ScTemplate()
         templ.quintuple(
-            (sc_type.VAR_NODE, "_knowledge_level_info"),
+            ScKeynodes.resolve("nrel_user_knowledge_level", sc_type.CONST_NODE_NON_ROLE),
             sc_type.VAR_ACTUAL_TEMP_POS_ARC,
-            raiting,
+            (sc_type.VAR_NODE, "main"),
             sc_type.VAR_PERM_POS_ARC,
-            ScKeynodes("rrel_student", sc_type.CONST_NODE_ROLE)
+            raiting
         )
         templ.quintuple(
-            "_knowledge_level_info",
-            (sc_type.VAR_ACTUAL_TEMP_POS_ARC, "_arc_to_knowledge_level"),
-            (sc_type.VAR_NODE, "_knowledge_level"),
+            "main",
             sc_type.VAR_ACTUAL_TEMP_POS_ARC,
-            ScKeynodes("rrel_knowledge_level", sc_type.CONST_NODE_ROLE)
+            (sc_type.VAR_NODE, "knowledge_level"),
+            sc_type.VAR_PERM_POS_ARC,
+            ScKeynodes.resolve("rrel_knowledge_level", sc_type.CONST_NODE_ROLE)
         )
         if search_by_template(templ):
             return True

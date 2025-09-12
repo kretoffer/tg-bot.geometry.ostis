@@ -13,7 +13,7 @@ def get_rating(user: ScAddr, relation: ScAddr) -> ScAddr:
         relation
     )
 
-    search_results = search_by_template()
+    search_results = search_by_template(templ)
     if search_results:
         return search_results[0].get("_rating")
     return ScAddr()
