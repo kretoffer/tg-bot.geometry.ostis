@@ -25,6 +25,7 @@ triger_phrases = (
 @reflection_router.callback_query(F.data == "start_reflection")
 async def start_reflection(query: Message | CallbackQuery):
     # TODO удаление плохо/хорошо изученных тем в самооценке пользователя
+    query = query if query is Message else query.message
     if await check_user_in_sc_machine(query.from_user.id):
         await query.answer("Как вы оцениваете свой уровень знаний", reply_markup=select_knowledge_level_keyboard)
     else:
