@@ -29,7 +29,7 @@ def get_name_of_theme(theme: ScAddr) -> str:
             sc_type.VAR_COMMON_ARC,
             (sc_type.VAR_NODE_LINK, "name"),
             sc_type.VAR_PERM_POS_ARC,
-            ScKeynodes("nrel_name_studied_themes", sc_type.CONST_NODE_NON_ROLE)
+            ScKeynodes.resolve("nrel_name", sc_type.CONST_NODE_NON_ROLE)
         )
     name = str(get_link_content_data(search_by_template(templ)[0].get("name")))
     return name

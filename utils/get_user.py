@@ -7,6 +7,7 @@ from sc_kpm.utils import get_link_content_data
 
 from utils.get_rating import get_self_rating, get_system_rating
 from utils.themes import get_themes_from_set, get_name_of_theme
+from utils.get_idtf import get_ru_main_identifier
 from shemes.user import User, Rating
 
 from typing import Optional
@@ -30,46 +31,59 @@ def get_user(user_id: int) -> ScAddr:
     return ScAddr()
 
 
-def get_rating(rating: ScAddr) -> Optional[Rating]:
+def get_rating(rating: ScAddr, user: ScAddr) -> Optional[Rating]:
     if not rating.is_valid():
         return None
     templ = ScTemplate()
     templ.quintuple(
-        (sc_type.VAR_NODE, "_knowledge_level_info"),
+        ScKeynodes.resolve("nrel_user_knowledge_level", sc_type.CONST_NODE_NON_ROLE),
         sc_type.VAR_ACTUAL_TEMP_POS_ARC,
-        rating,
+        (sc_type.VAR_NODE, "main"),
         sc_type.VAR_PERM_POS_ARC,
-        ScKeynodes.resolve("rrel_student", sc_type.CONST_NODE_ROLE)
+        rating
     )
-
     templ.quintuple(
-        "_knowledge_level_info",
-        (sc_type.VAR_ACTUAL_TEMP_POS_ARC, "_arc_to_knowledge_level"),
-        (sc_type.VAR_NODE, "_knowledge_level"),
+        "main",
+        sc_type.VAR_ACTUAL_TEMP_POS_ARC,
+        (sc_type.VAR_NODE, "knowledge_level"),
         sc_type.VAR_PERM_POS_ARC,
         ScKeynodes.resolve("rrel_knowledge_level", sc_type.CONST_NODE_ROLE)
     )
     knowledge_level = None
     if search_results := search_by_template(templ):
-        # TODO Получение уровня знаний в формате str
-        ...
+        knowledge_level_node = search_results[0].get("knowledge_level")
+        knowledge_level = get_link_content_data(get_ru_main_identifier(knowledge_level_node))
+    else: 
+        return 
 
-    templ.quintuple(
-        rating,
+    worth_themes_templ = ScTemplate()
+    worth_themes_templ.quintuple(
+        user,
         sc_type.VAR_COMMON_ARC,
-        (sc_type.VAR_NODE, "themes"),
+        (sc_type.VAR_NODE_TUPLE, "themes"),
         sc_type.VAR_PERM_POS_ARC,
         ScKeynodes.resolve("nrel_worth_studied_themes", sc_type.CONST_NODE_NON_ROLE)
     )
-    worth_studied_themes_set = search_by_template(templ)[0].get("themes")
-    templ.quintuple(
+    worth_themes_templ.triple(
         rating,
+        sc_type.VAR_PERM_POS_ARC,
+        "themes"
+    )
+    worth_studied_themes_set = search_by_template(worth_themes_templ)[0].get("themes")
+    well_themes_templ = ScTemplate()
+    well_themes_templ.quintuple(
+        user,
         sc_type.VAR_COMMON_ARC,
-        (sc_type.VAR_NODE, "themes"),
+        (sc_type.VAR_NODE_TUPLE, "themes"),
         sc_type.VAR_PERM_POS_ARC,
         ScKeynodes.resolve("nrel_well_studied_themes", sc_type.CONST_NODE_NON_ROLE)
     )
-    well_studied_themes_set = search_by_template(templ)[0].get("themes")
+    well_themes_templ.triple(
+        rating,
+        sc_type.VAR_PERM_POS_ARC,
+        "themes"
+    )
+    well_studied_themes_set = search_by_template(well_themes_templ)[0].get("themes")
     worth_studied_themes = [get_name_of_theme(theme) for theme in get_themes_from_set(worth_studied_themes_set)]
     well_studied_themes = [get_name_of_theme(theme) for theme in get_themes_from_set(well_studied_themes_set)]
 
@@ -110,8 +124,8 @@ def get_user_info(user_id: int) -> Optional[User]:
         name,
         user_class,
         achievements,
-        get_rating(get_self_rating(user)),
-        get_rating(get_system_rating(user))
+        get_rating(get_self_rating(user), user),
+        get_rating(get_system_rating(user), user)
     )
 
 
