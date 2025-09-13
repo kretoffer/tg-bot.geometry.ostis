@@ -36,8 +36,18 @@ def get_name_of_theme(theme: ScAddr) -> str:
 
 
 async def get_themes_list() -> List[ScAddr]:
-    ... # TODO получение списка тем из БЗ
-    return []
+    templ = ScTemplate()
+    templ.triple(
+        ScKeynodes.resolve("concept_theme", sc_type.CONST_NODE_CLASS),
+        sc_type.VAR_PERM_POS_ARC,
+        (sc_type.VAR_NODE, "theme")
+    )
+    search_results = search_by_template(templ)
+
+    themes = []
+    for search_result in search_results:
+        themes.append(search_result.get("theme"))
+    return themes
 
 
 def get_worth_studied_themes_set(rating: ScAddr, user: ScAddr) -> ScAddr:
