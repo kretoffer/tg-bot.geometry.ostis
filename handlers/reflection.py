@@ -4,7 +4,7 @@ from aiogram.types import CallbackQuery, Message
 from aiogram.exceptions import TelegramAPIError, TelegramBadRequest, TelegramNotFound
 
 from sc_client.constants import sc_type
-from sc_client.models import ScTemplate
+from sc_client.models import ScTemplate, ScAddr
 from sc_client.client import search_by_template, delete_elements
 
 from sc_kpm import ScKeynodes
@@ -111,14 +111,35 @@ async def set_self_knowledge_level(query: CallbackQuery):
     await query.message.edit_text("Выберите темы, которые вы плохо знаете", reply_markup=markup)
 
 
+def link_theme_to_set(set: ScAddr, rating: ScAddr, theme: ScAddr):
+    arc = generate_connector(
+        sc_type.CONST_PERM_POS_ARC,
+        set,
+        theme
+    )
+    generate_connector(
+        sc_type.CONST_PERM_POS_ARC,
+        rating,
+        theme
+    )
+    generate_connector(
+        sc_type.CONST_PERM_POS_ARC,
+        rating,
+        arc
+    )
+
+
 @reflection_router.callback_query(PrefixCallbackFilter("self-worth-theme"))
 async def set_self_worth_theme(query: CallbackQuery):
     theme_id = int(query.data.split(":")[1])
-    # TODO Запись плохо изученных тем в БЗ
-    
+    user = get_user(query.message.from_user.id)
+    rating = get_self_rating(user)
     themes = await get_themes_list()
-    themes = [get_name_of_theme(theme) for theme in themes]
-    theme_name = themes[theme_id]
+    
+    themes_set = get_worth_studied_themes_set(rating, user)
+    link_theme_to_set(themes_set, rating, themes[theme_id])
+    
+    theme_name = get_name_of_theme(themes[theme_id])
     await query.message.answer(f"Установлена плохо изученная тема: {theme_name}\n\n_Вы можете продолжить выбирать плохоизученные темы или закончить_",
                          parse_mode="markdown")
     
@@ -142,11 +163,14 @@ async def stop_add_worth_themes(query: CallbackQuery, bot: Bot):
 @reflection_router.callback_query(PrefixCallbackFilter("self-well-theme"))
 async def set_self_well_theme(query: CallbackQuery):
     theme_id = int(query.data.split(":")[1])
-    # TODO Запись хорошо изученных тем в БЗ
-    
+    user = get_user(query.message.from_user.id)
+    rating = get_self_rating(user)
     themes = await get_themes_list()
-    themes = [get_name_of_theme(theme) for theme in themes]
-    theme_name = themes[theme_id]
+    
+    themes_set = get_well_studied_themes_set(rating, user)
+    link_theme_to_set(themes_set, rating, themes[theme_id])
+    
+    theme_name = get_name_of_theme(themes[theme_id])
     await query.message.answer(f"Установлена хорошо изученная тема: {theme_name}\n\n_Вы можете продолжить выбирать плохоизученные темы или закончить_",
                          parse_mode="markdown")
     
