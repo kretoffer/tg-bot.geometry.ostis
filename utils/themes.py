@@ -1,6 +1,6 @@
 from sc_client.constants import sc_type
 from sc_client.models import ScTemplate, ScAddr
-from sc_client.client import search_by_template
+from sc_client.client import search_by_template, delete_elements
 
 from sc_kpm import ScKeynodes
 from sc_kpm.utils import get_link_content_data
@@ -64,3 +64,22 @@ def get_studied_themes_set(rating: ScAddr, user: ScAddr, comporator) -> ScAddr:
     )
     studied_themes_set = search_by_template(templ)[0].get("themes")
     return studied_themes_set
+
+
+def delete_themes_from_set(tuple: ScAddr, set: ScAddr):
+    templ = ScTemplate()
+    templ.quintuple(
+        tuple,
+        (sc_type.VAR_PERM_POS_ARC, "arc_to_theme"),
+        (sc_type.VAR_NODE, "theme"),
+        sc_type.VAR_PERM_POS_ARC,
+        set
+    )
+    templ.triple(
+        set,
+        (sc_type.VAR_PERM_POS_ARC, "arc_from_set"),
+        "theme"
+    )
+    search_results = search_by_template(templ)
+    for search_result in search_results:
+        delete_elements(search_result.get("arc_to_theme"), search_result.get("arc_from_set"))

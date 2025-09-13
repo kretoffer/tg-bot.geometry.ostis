@@ -3,6 +3,13 @@ from aiogram.types import CallbackQuery, Message
 
 from aiogram.exceptions import TelegramAPIError, TelegramBadRequest, TelegramNotFound
 
+from sc_client.constants import sc_type
+from sc_client.models import ScTemplate
+from sc_client.client import search_by_template, delete_elements
+
+from sc_kpm import ScKeynodes
+from sc_kpm.utils import generate_connector
+
 from keyboards.reflection import select_knowledge_level_keyboard
 from keyboards.start_keyboards import start_without_test_keyboard
 from keyboards.themes_keyboard import get_theme_keyboard
@@ -26,18 +33,79 @@ triger_phrases = (
 @reflection_router.message(F.text.lower().in_(triger_phrases))
 @reflection_router.callback_query(F.data == "start_reflection")
 async def start_reflection(query: Message | CallbackQuery):
-    # TODO удаление плохо/хорошо изученных тем в самооценке пользователя
-    query = query if query is Message else query.message
-    if await check_user_in_sc_machine(query.from_user.id):
-        await query.answer("Как вы оцениваете свой уровень знаний", reply_markup=select_knowledge_level_keyboard)
+    message: Message = query if query is Message else query.message
+
+    user = get_user(message.from_user.id)
+    rating = get_self_rating(user)
+    worth_studied_themes_set = get_worth_studied_themes_set(rating, user)
+    well_studied_themes_set = get_well_studied_themes_set(rating, user)
+    
+    delete_themes_from_set(worth_studied_themes_set, rating)
+    delete_themes_from_set(well_studied_themes_set, rating)
+    
+    if await check_user_in_sc_machine(message.from_user.id):
+        await message.answer("Как вы оцениваете свой уровень знаний", reply_markup=select_knowledge_level_keyboard)
     else:
-        await query.answer(START_PHRASE_WITHOUT_TEST, reply_markup=start_without_test_keyboard, parse_mode="markdown")
+        await message.answer(START_PHRASE_WITHOUT_TEST, reply_markup=start_without_test_keyboard, parse_mode="markdown")
 
 
 @reflection_router.callback_query(PrefixCallbackFilter("self-kn-level"))
 async def set_self_knowledge_level(query: CallbackQuery):
-    # TODO Запись уровня знаний в БЗ
+    kn_level = query.data.split(":")[1]
+    user = get_user(query.message.from_user.id)
+    rating = get_self_rating(user)
+
+    templ = ScTemplate()
+    templ.quintuple(
+        ScKeynodes.resolve("nrel_user_knowledge_level", sc_type.CONST_NODE_NON_ROLE),
+        sc_type.VAR_ACTUAL_TEMP_POS_ARC,
+        (sc_type.VAR_NODE, "main"),
+        sc_type.VAR_PERM_POS_ARC,
+        rating
+    )
+    templ.quintuple(
+        "main",
+        (sc_type.VAR_ACTUAL_TEMP_POS_ARC, "arc_to_knowledge_level"),
+        (sc_type.VAR_NODE, "knowledge_level"),
+        sc_type.VAR_PERM_POS_ARC,
+        ScKeynodes.resolve("rrel_knowledge_level", sc_type.CONST_NODE_ROLE)
+    )
+    templ.triple(
+        rating,
+        (sc_type.VAR_PERM_POS_ARC, "arc_to_knowledge_level_from_rating"),
+        "knowledge_level"
+    )
+
+    search_result = search_by_template(templ)[0]
+    arc_to_knowledge_level = search_result.get("arc_to_knowledge_level")
+    arc_to_knowledge_level_from_rating = search_result.get("arc_to_knowledge_level_from_rating")
+    main = search_result.get("main")
+
+    delete_elements(arc_to_knowledge_level, arc_to_knowledge_level_from_rating)
+
+    arc = generate_connector(
+        sc_type.CONST_ACTUAL_TEMP_POS_ARC,
+        main,
+        ScKeynodes.resolve(f"{kn_level}_knowledge_level", sc_type.CONST_NODE)
+    )
+    generate_connector(
+        sc_type.CONST_PERM_POS_ARC,
+        rating,
+        ScKeynodes.resolve(f"{kn_level}_knowledge_level", sc_type.CONST_NODE)
+    )
+    generate_connector(
+        sc_type.CONST_PERM_POS_ARC,
+        ScKeynodes.resolve("rrel_knowledge_level", sc_type.CONST_NODE_ROLE),
+        arc
+    )
+    generate_connector(
+        sc_type.CONST_PERM_POS_ARC,
+        rating,
+        arc
+    )
+
     themes = await get_themes_list()
+    themes = [get_name_of_theme(theme) for theme in themes]
     markup = get_theme_keyboard("self-worth-theme", "themes_page", themes, page=0, page_size=10, nav_postfix="self-worth-theme")
     await query.message.answer("Нажми когда выберешь все плохо изученные темы", reply_markup=get_stop_keyboard("self-worth-theme", str(query.message.message_id)))
     await query.message.edit_text("Выберите темы, которые вы плохо знаете", reply_markup=markup)

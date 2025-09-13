@@ -105,14 +105,14 @@ def get_user_info(user_id: int) -> Optional[User]:
 
 async def check_user_in_sc_machine(user_id: int) -> bool:
     if user := get_user(user_id):
-        raiting = get_system_rating(user)
+        rating = get_system_rating(user)
         templ = ScTemplate()
         templ.quintuple(
             ScKeynodes.resolve("nrel_user_knowledge_level", sc_type.CONST_NODE_NON_ROLE),
             sc_type.VAR_ACTUAL_TEMP_POS_ARC,
             (sc_type.VAR_NODE, "main"),
             sc_type.VAR_PERM_POS_ARC,
-            raiting
+            rating
         )
         templ.quintuple(
             "main",
