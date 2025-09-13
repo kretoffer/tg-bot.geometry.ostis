@@ -6,6 +6,7 @@ start_keyboard = ReplyKeyboardMarkup(
         [KeyboardButton(text="Уроки")],
         [KeyboardButton(text="Задачи")],
         [KeyboardButton(text="Тесты")],
+        [KeyboardButton(text="Справочник")],
         [KeyboardButton(text="Личный кабинет")]
     ],
     resize_keyboard=True

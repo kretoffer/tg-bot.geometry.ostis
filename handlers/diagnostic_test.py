@@ -22,7 +22,7 @@ async def set_answer():
     "Запись ответа пользователя в БЗ"
 
 
-@diagnostic_test_router.message(F.text == "Пройти тест")
+@diagnostic_test_router.message(F.text.lower() == "пройти тест")
 @diagnostic_test_router.message(Command("test"))
 async def cmd_start_diagnostic_test(message: Message):
     # Запуск теста TODO

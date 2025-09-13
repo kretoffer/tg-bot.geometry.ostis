@@ -12,7 +12,7 @@ from config import START_PHRASE_WITHOUT_TEST
 personal_accaunt_router = Router()
 
 
-@personal_accaunt_router.message(F.text == "Личный кабинет")
+@personal_accaunt_router.message(F.text.lower() == "личный кабинет")
 @personal_accaunt_router.message(Command("accaunt"))
 async def cmd_accaunt(message: Message):
     user_info = get_user_info(message.from_user.id)

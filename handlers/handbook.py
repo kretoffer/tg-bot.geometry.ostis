@@ -12,7 +12,7 @@ handbook_router = Router()
 PAGE_SIZE = 10
 
 
-@handbook_router.message(F.text == "Справочник")
+@handbook_router.message(F.text.lower() == "справочник")
 @handbook_router.message(Command("handbook"))
 async def cmd_get_handbook(message: Message):
     themes = await get_themes_list()
