@@ -38,3 +38,29 @@ def get_name_of_theme(theme: ScAddr) -> str:
 async def get_themes_list() -> list:
     ... # TODO получение списка тем из БЗ
     return [f"theme {i}" for i in range(1, 51)] # заглушка
+
+
+def get_worth_studied_themes_set(rating: ScAddr, user: ScAddr) -> ScAddr:
+    return get_studied_themes_set(rating, user, ScKeynodes.resolve("nrel_worth_studied_themes", sc_type.CONST_NODE_NON_ROLE))
+
+
+def get_well_studied_themes_set(rating: ScAddr, user: ScAddr) -> ScAddr:
+    return get_studied_themes_set(rating, user, ScKeynodes.resolve("nrel_well_studied_themes", sc_type.CONST_NODE_NON_ROLE))
+
+
+def get_studied_themes_set(rating: ScAddr, user: ScAddr, comporator) -> ScAddr:
+    templ = ScTemplate()
+    templ.quintuple(
+        user,
+        sc_type.VAR_COMMON_ARC,
+        (sc_type.VAR_NODE_TUPLE, "themes"),
+        sc_type.VAR_PERM_POS_ARC,
+        comporator
+    )
+    templ.triple(
+        rating,
+        sc_type.VAR_PERM_POS_ARC,
+        "themes"
+    )
+    studied_themes_set = search_by_template(templ)[0].get("themes")
+    return studied_themes_set

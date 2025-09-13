@@ -6,7 +6,7 @@ from sc_kpm import ScKeynodes
 from sc_kpm.utils import get_link_content_data
 
 from utils.get_rating import get_self_rating, get_system_rating
-from utils.themes import get_themes_from_set, get_name_of_theme
+from utils.themes import get_themes_from_set, get_name_of_theme, get_well_studied_themes_set, get_worth_studied_themes_set
 from utils.get_idtf import get_ru_main_identifier
 from shemes.user import User, Rating
 
@@ -56,34 +56,8 @@ def get_rating(rating: ScAddr, user: ScAddr) -> Optional[Rating]:
     else: 
         return 
 
-    worth_themes_templ = ScTemplate()
-    worth_themes_templ.quintuple(
-        user,
-        sc_type.VAR_COMMON_ARC,
-        (sc_type.VAR_NODE_TUPLE, "themes"),
-        sc_type.VAR_PERM_POS_ARC,
-        ScKeynodes.resolve("nrel_worth_studied_themes", sc_type.CONST_NODE_NON_ROLE)
-    )
-    worth_themes_templ.triple(
-        rating,
-        sc_type.VAR_PERM_POS_ARC,
-        "themes"
-    )
-    worth_studied_themes_set = search_by_template(worth_themes_templ)[0].get("themes")
-    well_themes_templ = ScTemplate()
-    well_themes_templ.quintuple(
-        user,
-        sc_type.VAR_COMMON_ARC,
-        (sc_type.VAR_NODE_TUPLE, "themes"),
-        sc_type.VAR_PERM_POS_ARC,
-        ScKeynodes.resolve("nrel_well_studied_themes", sc_type.CONST_NODE_NON_ROLE)
-    )
-    well_themes_templ.triple(
-        rating,
-        sc_type.VAR_PERM_POS_ARC,
-        "themes"
-    )
-    well_studied_themes_set = search_by_template(well_themes_templ)[0].get("themes")
+    worth_studied_themes_set = get_worth_studied_themes_set(rating, user)
+    well_studied_themes_set = get_well_studied_themes_set(rating, user)
     worth_studied_themes = [get_name_of_theme(theme) for theme in get_themes_from_set(worth_studied_themes_set)]
     well_studied_themes = [get_name_of_theme(theme) for theme in get_themes_from_set(well_studied_themes_set)]
 
