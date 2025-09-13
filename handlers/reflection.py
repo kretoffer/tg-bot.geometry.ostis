@@ -17,9 +17,10 @@ from keyboards import get_stop_keyboard
 
 from utils.callback_filters import PrefixCallbackFilter
 from utils.get_user import check_user_in_sc_machine, get_reflection_results
-from utils.themes import get_themes_list, get_well_studied_themes_set, get_worth_studied_themes_set, delete_themes_from_set, get_name_of_theme
+from utils.themes import get_themes_list, get_well_studied_themes_set, get_worth_studied_themes_set, delete_themes_from_set
 from utils.get_user import get_user
 from utils.get_rating import get_self_rating
+from utils.get_idtf import get_name_str
 
 from config import START_PHRASE_WITHOUT_TEST
 
@@ -105,7 +106,7 @@ async def set_self_knowledge_level(query: CallbackQuery):
     )
 
     themes = await get_themes_list()
-    themes = [get_name_of_theme(theme) for theme in themes]
+    themes = [get_name_str(theme) for theme in themes]
     markup = get_theme_keyboard("self-worth-theme", "themes_page", themes, page=0, page_size=10, nav_postfix="self-worth-theme")
     await query.message.answer("Нажми когда выберешь все плохо изученные темы", reply_markup=get_stop_keyboard("self-worth-theme", str(query.message.message_id)))
     await query.message.edit_text("Выберите темы, которые вы плохо знаете", reply_markup=markup)
@@ -139,7 +140,7 @@ async def set_self_worth_theme(query: CallbackQuery):
     themes_set = get_worth_studied_themes_set(rating, user)
     link_theme_to_set(themes_set, rating, themes[theme_id])
     
-    theme_name = get_name_of_theme(themes[theme_id])
+    theme_name = get_name_str(themes[theme_id])
     await query.message.answer(f"Установлена плохо изученная тема: {theme_name}\n\n_Вы можете продолжить выбирать плохоизученные темы или закончить_",
                          parse_mode="markdown")
     
@@ -154,7 +155,7 @@ async def stop_add_worth_themes(query: CallbackQuery, bot: Bot):
     await query.message.delete()
 
     themes = await get_themes_list()
-    themes = [get_name_of_theme(theme) for theme in themes]
+    themes = [get_name_str(theme) for theme in themes]
     markup = get_theme_keyboard("self-well-theme", "themes_page", themes, page=0, page_size=10, nav_postfix="self-well-theme")
     message = await bot.send_message(query.message.chat.id,"Выберите темы, которые вы хорошо знаете", reply_markup=markup)
     await query.message.answer("Нажми когда выберешь все хорошо изученные темы", reply_markup=get_stop_keyboard("self-well-theme", str(message.message_id)))
@@ -170,7 +171,7 @@ async def set_self_well_theme(query: CallbackQuery):
     themes_set = get_well_studied_themes_set(rating, user)
     link_theme_to_set(themes_set, rating, themes[theme_id])
     
-    theme_name = get_name_of_theme(themes[theme_id])
+    theme_name = get_name_str(themes[theme_id])
     await query.message.answer(f"Установлена хорошо изученная тема: {theme_name}\n\n_Вы можете продолжить выбирать плохоизученные темы или закончить_",
                          parse_mode="markdown")
     

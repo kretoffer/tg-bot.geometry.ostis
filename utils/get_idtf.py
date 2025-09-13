@@ -2,12 +2,18 @@ from sc_client.models import ScAddr, ScTemplate
 from sc_client.constants import sc_type
 from sc_client.client import search_by_template
 
-from sc_kpm.utils import search_element_by_non_role_relation, search_connector
+from sc_kpm.utils import search_element_by_non_role_relation, search_connector, get_link_content_data
 from sc_kpm import ScKeynodes
 
 
 def get_ru_main_identifier(entity_addr: ScAddr) -> ScAddr:
-        return search_lang_value_by_nrel_identifier(entity_addr, "nrel_main_idtf", "lang_ru")
+    return search_lang_value_by_nrel_identifier(entity_addr, "nrel_main_idtf", "lang_ru")
+
+
+def get_name_str(addr: ScAddr) -> ScAddr:
+    return get_link_content_data(search_lang_value_by_nrel_identifier(addr, "nrel_name"))
+def get_description_str(addr: ScAddr) -> ScAddr:
+    return get_link_content_data(search_lang_value_by_nrel_identifier(addr, "nrel_description"))
 
     
 def search_lang_value_by_nrel_identifier(entity_addr: ScAddr, idtf_str: str = "nrel_main_idtf", lang_str: str = "lang_ru") -> ScAddr:

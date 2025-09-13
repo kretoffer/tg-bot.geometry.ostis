@@ -10,8 +10,10 @@ class ContentType(Enum):
     TEXT = 2
     VISUALIZATION = 3
 
+@dataclass
 class Achievement:
-    ...
+    name: str
+    description: str
 
 @dataclass
 class Rating:

@@ -6,11 +6,11 @@ from sc_kpm import ScKeynodes
 from sc_kpm.utils import get_link_content_data
 
 from utils.get_rating import get_self_rating, get_system_rating
-from utils.themes import get_themes_from_set, get_name_of_theme, get_well_studied_themes_set, get_worth_studied_themes_set
-from utils.get_idtf import get_ru_main_identifier
-from shemes.user import User, Rating
+from utils.themes import get_themes_from_set, get_well_studied_themes_set, get_worth_studied_themes_set
+from utils.get_idtf import get_ru_main_identifier, get_name_str
+from shemes.user import User, Rating, Achievement
 
-from typing import Optional
+from typing import Optional, List
 
 
 def get_user(user_id: int) -> ScAddr:
@@ -58,8 +58,8 @@ def get_rating(rating: ScAddr, user: ScAddr) -> Optional[Rating]:
 
     worth_studied_themes_set = get_worth_studied_themes_set(rating, user)
     well_studied_themes_set = get_well_studied_themes_set(rating, user)
-    worth_studied_themes = [get_name_of_theme(theme) for theme in get_themes_from_set(worth_studied_themes_set)]
-    well_studied_themes = [get_name_of_theme(theme) for theme in get_themes_from_set(well_studied_themes_set)]
+    worth_studied_themes = [get_name_str(theme) for theme in get_themes_from_set(worth_studied_themes_set)]
+    well_studied_themes = [get_name_str(theme) for theme in get_themes_from_set(well_studied_themes_set)]
 
 
     return Rating(
@@ -67,6 +67,23 @@ def get_rating(rating: ScAddr, user: ScAddr) -> Optional[Rating]:
         worth_studied_themes,
         well_studied_themes
     )
+
+
+def get_user_achievements(user: ScAddr) -> List[ScAddr]:
+    templ = ScTemplate()
+    templ.quintuple(
+        user,
+        sc_type.VAR_COMMON_ARC,
+        (sc_type.VAR_NODE, "achievement"),
+        sc_type.VAR_PERM_POS_ARC,
+        ScKeynodes.resolve("nrel_achievements", sc_type.CONST_NODE_NON_ROLE)
+    )
+    search_results = search_by_template(templ)
+    return [search_result.get("achievement") for search_result in search_results]
+
+
+def get_user_achievements_info(achievements: List[ScAddr]) -> List[Achievement]:
+    ...
 
 
 def get_user_info(user_id: int) -> Optional[User]:
@@ -91,7 +108,8 @@ def get_user_info(user_id: int) -> Optional[User]:
     )
     user_class = int(get_link_content_data(search_by_template(templ)[0].get("class")))
 
-    achievements = ...
+    achievements = get_user_achievements(user)
+    
     achievements = [] #Заглушка, пока не реализован класс Achievements
     return User(
         user_id,
