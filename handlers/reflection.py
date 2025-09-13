@@ -10,7 +10,9 @@ from keyboards import get_stop_keyboard
 
 from utils.callback_filters import PrefixCallbackFilter
 from utils.get_user import check_user_in_sc_machine, get_reflection_results
-from utils.themes import get_themes_list
+from utils.themes import get_themes_list, get_well_studied_themes_set, get_worth_studied_themes_set, delete_themes_from_set, get_name_of_theme
+from utils.get_user import get_user
+from utils.get_rating import get_self_rating
 
 from config import START_PHRASE_WITHOUT_TEST
 
@@ -47,6 +49,7 @@ async def set_self_worth_theme(query: CallbackQuery):
     # TODO Запись плохо изученных тем в БЗ
     
     themes = await get_themes_list()
+    themes = [get_name_of_theme(theme) for theme in themes]
     theme_name = themes[theme_id]
     await query.message.answer(f"Установлена плохо изученная тема: {theme_name}\n\n_Вы можете продолжить выбирать плохоизученные темы или закончить_",
                          parse_mode="markdown")
@@ -62,6 +65,7 @@ async def stop_add_worth_themes(query: CallbackQuery, bot: Bot):
     await query.message.delete()
 
     themes = await get_themes_list()
+    themes = [get_name_of_theme(theme) for theme in themes]
     markup = get_theme_keyboard("self-well-theme", "themes_page", themes, page=0, page_size=10, nav_postfix="self-well-theme")
     message = await bot.send_message(query.message.chat.id,"Выберите темы, которые вы хорошо знаете", reply_markup=markup)
     await query.message.answer("Нажми когда выберешь все хорошо изученные темы", reply_markup=get_stop_keyboard("self-well-theme", str(message.message_id)))
@@ -73,6 +77,7 @@ async def set_self_well_theme(query: CallbackQuery):
     # TODO Запись хорошо изученных тем в БЗ
     
     themes = await get_themes_list()
+    themes = [get_name_of_theme(theme) for theme in themes]
     theme_name = themes[theme_id]
     await query.message.answer(f"Установлена хорошо изученная тема: {theme_name}\n\n_Вы можете продолжить выбирать плохоизученные темы или закончить_",
                          parse_mode="markdown")

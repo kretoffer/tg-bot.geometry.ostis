@@ -35,9 +35,9 @@ def get_name_of_theme(theme: ScAddr) -> str:
     return name
 
 
-async def get_themes_list() -> list:
+async def get_themes_list() -> List[ScAddr]:
     ... # TODO получение списка тем из БЗ
-    return [f"theme {i}" for i in range(1, 51)] # заглушка
+    return []
 
 
 def get_worth_studied_themes_set(rating: ScAddr, user: ScAddr) -> ScAddr:
