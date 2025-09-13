@@ -1,28 +1,29 @@
 from sc_client.constants import sc_type
-from sc_client.models import ScTemplate, ScLinkContent, ScLinkContentType, ScConstruction, ScAddr
-from sc_client.client import search_by_template, create_elements
+from sc_client.models import ScTemplate, ScAddr
+from sc_client.client import search_by_template, search_links_by_contents
 
 from sc_kpm import ScKeynodes
 from sc_kpm.utils import get_link_content_data
 
 from utils.get_rating import get_self_rating, get_system_rating
 from utils.themes import get_themes_from_set, get_well_studied_themes_set, get_worth_studied_themes_set
-from utils.get_idtf import get_ru_main_identifier, get_name_str
+from utils.get_idtf import get_ru_main_identifier, get_name_str, get_description_str
 from shemes.user import User, Rating, Achievement
 
 from typing import Optional, List
 
 
 def get_user(user_id: int) -> ScAddr:
-    # не работает, т.к. создает новый линк, а не находит старый
-    constr = ScConstruction()
-    constr.generate_link(sc_type.CONST_NODE_LINK, ScLinkContent(str(user_id), ScLinkContentType.STRING))
-    link_user_id = create_elements(constr)[0]
+    [searc_result] = search_links_by_contents(str(user_id))
+    if searc_result:
+        [link_user_id] = searc_result
+    else:
+        return ScAddr()
     templ = ScTemplate()
     templ.quintuple(
         (sc_type.VAR_NODE, "user"),
         sc_type.VAR_COMMON_ARC,
-        sc_type.VAR_NODE_LINK,#link_user_id,
+        link_user_id,
         sc_type.VAR_PERM_POS_ARC,
         ScKeynodes.resolve("nrel_tg_id", sc_type.NODE_NON_ROLE)
     )
@@ -83,7 +84,13 @@ def get_user_achievements(user: ScAddr) -> List[ScAddr]:
 
 
 def get_user_achievements_info(achievements: List[ScAddr]) -> List[Achievement]:
-    ...
+    return [
+        Achievement(
+            get_name_str(achievement),
+            get_description_str(achievement)
+        )
+        for achievement in achievements
+    ]
 
 
 def get_user_info(user_id: int) -> Optional[User]:

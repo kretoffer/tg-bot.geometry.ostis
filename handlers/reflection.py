@@ -36,7 +36,7 @@ triger_phrases = (
 async def start_reflection(query: Message | CallbackQuery):
     message: Message = query if query is Message else query.message
 
-    user = get_user(message.from_user.id)
+    user = get_user(message.chat.id)
     rating = get_self_rating(user)
     worth_studied_themes_set = get_worth_studied_themes_set(rating, user)
     well_studied_themes_set = get_well_studied_themes_set(rating, user)
@@ -44,7 +44,7 @@ async def start_reflection(query: Message | CallbackQuery):
     delete_themes_from_set(worth_studied_themes_set, rating)
     delete_themes_from_set(well_studied_themes_set, rating)
     
-    if await check_user_in_sc_machine(message.from_user.id):
+    if await check_user_in_sc_machine(message.chat.id):
         await message.answer("Как вы оцениваете свой уровень знаний", reply_markup=select_knowledge_level_keyboard)
     else:
         await message.answer(START_PHRASE_WITHOUT_TEST, reply_markup=start_without_test_keyboard, parse_mode="markdown")
@@ -53,7 +53,7 @@ async def start_reflection(query: Message | CallbackQuery):
 @reflection_router.callback_query(PrefixCallbackFilter("self-kn-level"))
 async def set_self_knowledge_level(query: CallbackQuery):
     kn_level = query.data.split(":")[1]
-    user = get_user(query.message.from_user.id)
+    user = get_user(query.message.chat.id)
     rating = get_self_rating(user)
 
     templ = ScTemplate()
@@ -133,7 +133,7 @@ def link_theme_to_set(set: ScAddr, rating: ScAddr, theme: ScAddr):
 @reflection_router.callback_query(PrefixCallbackFilter("self-worth-theme"))
 async def set_self_worth_theme(query: CallbackQuery):
     theme_id = int(query.data.split(":")[1])
-    user = get_user(query.message.from_user.id)
+    user = get_user(query.message.chat.id)
     rating = get_self_rating(user)
     themes = await get_themes_list()
     
@@ -164,7 +164,7 @@ async def stop_add_worth_themes(query: CallbackQuery, bot: Bot):
 @reflection_router.callback_query(PrefixCallbackFilter("self-well-theme"))
 async def set_self_well_theme(query: CallbackQuery):
     theme_id = int(query.data.split(":")[1])
-    user = get_user(query.message.from_user.id)
+    user = get_user(query.message.chat.id)
     rating = get_self_rating(user)
     themes = await get_themes_list()
     
@@ -189,5 +189,5 @@ async def stop_add_worth_themes(query: CallbackQuery, bot: Bot):
 
 @reflection_router.callback_query(F.data == "reflection")
 async def start_reflection(query: CallbackQuery):
-    reflection_results = await get_reflection_results(query.from_user.id)
+    reflection_results = await get_reflection_results(query.message.chat.id)
     await query.message.answer(f"*Результаты рефлексии:*\n\n{reflection_results}", parse_mode="markdown")
