@@ -35,5 +35,5 @@ class User:
                 f"ID: {self.id}\n" \
                 f"Класс: {self.user_class}\n" \
                 f"Получено достижений: {len(self.achievements)}\n\n" \
-                f"Уровень знаний: {self.system_rating.knowledge_level}\n" \
-                f"Самооценка: {self.self_rating.knowledge_level}"
+                f"Уровень знаний: {self.system_rating.knowledge_level if self.system_rating else 'Не известно'}\n" \
+                f"Самооценка: {self.self_rating.knowledge_level if self.self_rating else 'Не известно'}"
