@@ -154,3 +154,42 @@ async def check_user_in_sc_machine(user_id: int) -> bool:
 async def get_reflection_results(user_id: int):
     # TODO Получение результатов рефлексии
     return "Результаты рефлексии"
+
+
+def get_user_passing_test_history(user: ScAddr, test: ScAddr) -> ScAddr:
+    if not all((user, test)):
+        return ScAddr()
+    templ = ScTemplate()
+    templ.quintuple(
+        (sc_type.VAR_COMMON_ARC, "_common_arc"),                #        =>
+        sc_type.VAR_COMMON_ARC,                                 #        || 
+                                                                #        \/
+        (sc_type.VAR_NODE, "_user_passing_test_history"),       # user_passing_test_history
+        sc_type.VAR_PERM_POS_ARC,                               #                <-
+        ScKeynodes.resolve("nrel_user_passing_test_history", sc_type.CONST_NODE_NON_ROLE)
+    )
+    templ.triple(
+        user,
+        "_common_arc", # => 
+        test
+    )
+    search_results = search_by_template(templ)
+        
+    if search_results:
+        search_result = search_results[0]
+        return search_result.get("_user_passing_test_history")
+    
+    return ScAddr()
+
+async def get_current_test(user: ScAddr) -> ScAddr:
+    templ = ScTemplate()
+    templ.quintuple(
+        user,
+        sc_type.VAR_COMMON_ARC,
+        (sc_type.VAR_NODE, "test"),
+        sc_type.VAR_PERM_POS_ARC,
+        ScKeynodes.resolve("nrel_current_test", sc_type.VAR_NODE_NON_ROLE)
+    )
+    if search_results := search_by_template(templ):
+        return search_results[0].get("test")
+    return ScAddr()
