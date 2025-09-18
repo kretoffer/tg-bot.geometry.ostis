@@ -15,8 +15,7 @@ start_router = Router()
 async def cmd_start(message: Message):
     user_id = message.from_user.id
     if await check_user_in_sc_machine(user_id):
-        await message.answer(START_PHRASE,
-                             reply_markup=start_keyboard)
+        await message.answer(START_PHRASE, reply_markup=start_keyboard)
     else:
         await message.answer(START_PHRASE_WITHOUT_TEST,
         parse_mode="markdown",
