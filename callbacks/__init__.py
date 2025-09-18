@@ -1,6 +1,8 @@
 import logging
 from logging import getLogger
 
+import asyncio
+
 from sc_client.constants import sc_type
 from sc_client.models import ScAddr, ScTemplate
 from sc_client.client import search_by_template
@@ -40,10 +42,9 @@ def get_action_class(action: ScAddr) -> ScAddr:
         return search_results[0].get("action_class")
 
 
-async def action_event_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
-    print("action_event_callback")
+def action_event_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
     action_class = get_action_class(trg)
     if action_class in callbacks:
-        await callbacks[action_class](src, connector, trg)
+        asyncio.run(callbacks[action_class](src, connector, trg))
     else:
         logger.warning(f"Unprocessed class of action: {action_class}")

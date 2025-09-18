@@ -5,8 +5,6 @@ from sc_client.client import search_by_template
 from sc_kpm.sc_keynodes import ScKeynodes
 from sc_kpm.utils import get_link_content_data
 
-from create_bot import bot
-
 from utils.get_user import get_user_passing_test_history, get_current_test
 from utils.question import question_to_question_object
 from utils.create_action import create_action
@@ -15,9 +13,10 @@ from handlers.diagnostic_test import get_last_question
 
 from keyboards.diagnostc_test import get_question_keyboard
 
+from callbacks_queue import add_to_queue
+
 
 async def get_next_question_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
-    print("get_next_question_callback")
     templ = ScTemplate()
     templ.quintuple(
         trg,
@@ -41,8 +40,8 @@ async def get_next_question_callback(src: ScAddr, connector: ScAddr, trg: ScAddr
     question = await get_last_question(get_user_passing_test_history(user, test))
     if question.is_valid():
         question_info = await question_to_question_object(question)
-        await bot.send_message(user_id, question_info.text, parse_mode="markdown", reply_markup=get_question_keyboard(question_info))
-    await bot.send_message(user_id, "Тест завершен")
+        await add_to_queue(user_id, question_info.text, parse_mode="markdown", reply_markup=get_question_keyboard(question_info))
+    add_to_queue(user_id, "Тест завершен")
 
 
 async def answered_question_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
