@@ -109,8 +109,9 @@ async def set_self_knowledge_level(query: CallbackQuery):
     )
 
     themes = await get_themes_list()
+    indexes = [theme.value for theme in themes]
     themes = [get_name_str(theme) for theme in themes]
-    markup = get_theme_keyboard("self-worth-theme", "themes_page", themes, page=0, page_size=10, nav_postfix="self-worth-theme")
+    markup = get_theme_keyboard("self-worth-theme", "themes_page", themes, indexes, page=0, page_size=10, nav_postfix="self-worth-theme")
     await query.message.answer("Нажми когда выберешь все плохо изученные темы", reply_markup=get_stop_keyboard("self-worth-theme", str(query.message.message_id)))
     await query.message.edit_text("Выберите темы, которые вы плохо знаете", reply_markup=markup)
 
@@ -138,12 +139,11 @@ async def set_self_worth_theme(query: CallbackQuery):
     theme_id = int(query.data.split(":")[1])
     user = get_user(query.message.chat.id)
     rating = get_self_rating(user)
-    themes = await get_themes_list()
     
     themes_set = get_worth_studied_themes_set(rating, user)
-    link_theme_to_set(themes_set, rating, themes[theme_id])
+    link_theme_to_set(themes_set, rating, ScAddr(theme_id))
     
-    theme_name = get_name_str(themes[theme_id])
+    theme_name = get_name_str(ScAddr(theme_id))
     await query.message.answer(f"Установлена плохо изученная тема: {theme_name}\n\n_Вы можете продолжить выбирать плохоизученные темы или закончить_",
                          parse_mode="markdown")
     
@@ -158,8 +158,9 @@ async def stop_add_worth_themes(query: CallbackQuery, bot: Bot):
     await query.message.delete()
 
     themes = await get_themes_list()
+    indexes = [theme.value for theme in themes]
     themes = [get_name_str(theme) for theme in themes]
-    markup = get_theme_keyboard("self-well-theme", "themes_page", themes, page=0, page_size=10, nav_postfix="self-well-theme")
+    markup = get_theme_keyboard("self-well-theme", "themes_page", themes, indexes, page=0, page_size=10, nav_postfix="self-well-theme")
     message = await bot.send_message(query.message.chat.id,"Выберите темы, которые вы хорошо знаете", reply_markup=markup)
     await query.message.answer("Нажми когда выберешь все хорошо изученные темы", reply_markup=get_stop_keyboard("self-well-theme", str(message.message_id)))
 
@@ -169,12 +170,11 @@ async def set_self_well_theme(query: CallbackQuery):
     theme_id = int(query.data.split(":")[1])
     user = get_user(query.message.chat.id)
     rating = get_self_rating(user)
-    themes = await get_themes_list()
     
     themes_set = get_well_studied_themes_set(rating, user)
-    link_theme_to_set(themes_set, rating, themes[theme_id])
+    link_theme_to_set(themes_set, rating, ScAddr(theme_id))
     
-    theme_name = get_name_str(themes[theme_id])
+    theme_name = get_name_str(ScAddr(theme_id))
     await query.message.answer(f"Установлена хорошо изученная тема: {theme_name}\n\n_Вы можете продолжить выбирать плохоизученные темы или закончить_",
                          parse_mode="markdown")
     

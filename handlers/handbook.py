@@ -17,8 +17,9 @@ PAGE_SIZE = 10
 @handbook_router.message(Command("handbook"))
 async def cmd_get_handbook(message: Message):
     themes = await get_themes_list()
+    indexes = [theme.value for theme in themes]
     themes = [get_name_str(theme) for theme in themes]
 
-    markup = get_theme_keyboard("handbook_theme", "themes_page", themes, page=0, page_size=PAGE_SIZE, nav_postfix="handbook_theme")
+    markup = get_theme_keyboard("handbook_theme", "themes_page", themes, indexes, page=0, page_size=PAGE_SIZE, nav_postfix="handbook_theme")
 
     await message.answer("*Справочник:*", parse_mode="markdown", reply_markup=markup)

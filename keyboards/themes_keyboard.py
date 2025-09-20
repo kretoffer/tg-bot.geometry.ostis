@@ -1,13 +1,13 @@
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
-def get_theme_keyboard(prefix: str, nav_prefix: str, themes: list, page: int = 0, page_size: int = 10, nav_postfix: str = ""):
+def get_theme_keyboard(prefix: str, nav_prefix: str, themes: list, indexes: list, page: int = 0, page_size: int = 10, nav_postfix: str = ""):
     start = page * page_size
     end = start + page_size
     page_themes = themes[start:end]
 
     keyboard = [
-        [InlineKeyboardButton(text=theme, callback_data=f"{prefix}:{themes.index(theme)}")]
+        [InlineKeyboardButton(text=theme, callback_data=f"{prefix}:{indexes[themes.index(theme)]}")]
         for theme in page_themes
     ]
 
