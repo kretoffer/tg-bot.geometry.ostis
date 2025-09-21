@@ -13,7 +13,7 @@ from handlers.diagnostic_test import get_last_question
 
 from keyboards.diagnostc_test import get_question_keyboard
 
-from callbacks_queue import add_to_queue
+from callbacks_queue import add_to_queue, QueueCallback
 
 
 async def get_next_question_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
@@ -40,14 +40,14 @@ async def get_next_question_callback(src: ScAddr, connector: ScAddr, trg: ScAddr
     question = await get_last_question(get_user_passing_test_history(user, test))
     if question.is_valid():
         question_info = await question_to_question_object(question)
-        await add_to_queue(user_id, question_info.text, parse_mode="markdown", reply_markup=get_question_keyboard(question_info))
-    add_to_queue(user_id, "Тест завершен")
+        await add_to_queue(QueueCallback(user_id, question_info.text, parse_mode="markdown", markup=get_question_keyboard(question_info)))
+    add_to_queue(QueueCallback(user_id=user_id, text="Тест завершен"))
 
 
 async def answered_question_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
     templ = ScTemplate()
     templ.quintuple(
-        src,
+        trg,
         sc_type.VAR_PERM_POS_ARC,
         (sc_type.VAR_NODE, "user"),
         sc_type.VAR_PERM_POS_ARC,
