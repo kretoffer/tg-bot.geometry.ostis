@@ -22,7 +22,7 @@ async def set_answer(user: ScAddr, test: ScAddr, answer: ScAddr):
     "Запись ответа пользователя в БЗ"
     if not test.is_valid():
         return
-    await create_action("action_answered_test_question", user, test, answer)
+    create_action("action_answered_test_question", user, test, answer)
 
 
 @diagnostic_test_router.message(F.text.lower() == "пройти тест")
@@ -50,7 +50,7 @@ async def set_user_kn_level(query: CallbackQuery):
     user_name_link = generate_link(query.message.chat.first_name, ScLinkContentType.STRING, sc_type.CONST_NODE_LINK)
     user_kn_level_link = ScKeynodes.resolve(f"{kn_level}_knowledge_level", sc_type.CONST_NODE)
 
-    await create_action("action_reg_user", link_user_id, user_class_link, user_name_link, user_kn_level_link)
+    create_action("action_reg_user", link_user_id, user_class_link, user_name_link, user_kn_level_link)
 
     # MOVE TO CALLBACK
     user = get_user(query.message.chat.id)
@@ -58,7 +58,7 @@ async def set_user_kn_level(query: CallbackQuery):
     start_diagnostic_test(user)
 
 async def start_diagnostic_test(user: ScAddr):    
-    await create_action("action_start_test", user)
+    create_action("action_start_test", user)
 
 
 async def get_last_question(passing_test_history: ScAddr) -> ScAddr:

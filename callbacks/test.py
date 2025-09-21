@@ -57,4 +57,4 @@ async def answered_question_callback(src: ScAddr, connector: ScAddr, trg: ScAddr
     user = search_result.get("user")
     test = get_current_test(user)
     question = get_last_question(get_user_passing_test_history(user), test)
-    await create_action("action_get_next_question", user, test, question)
+    create_action("action_get_next_question", user, test, question)

@@ -5,7 +5,7 @@ from sc_client.client import generate_elements
 from sc_kpm.sc_keynodes import ScKeynodes
 
 
-async def create_action(action: str, *args: ScAddr):
+def create_action(action: str, *args: ScAddr):
     action_class = ScKeynodes.resolve(action, sc_type.CONST_NODE_CLASS)
     action_initiated = ScKeynodes.resolve("action_initiated", sc_type.CONST_NODE_CLASS)
     constr = ScConstruction()
