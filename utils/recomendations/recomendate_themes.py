@@ -5,7 +5,7 @@ from typing import List
 
 async def get_recomendate_themes(*, data: str = None, result: ScAddr = None, **kwargs) -> List[ScAddr]:
     if not result:
-        result_addr = data.split(":")[3]
+        result_addr = int(data.split(":")[3])
         result = ScAddr(result_addr)
 
     good_themes, bad_themes, other_themes = ... # TODO
