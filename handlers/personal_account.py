@@ -15,7 +15,7 @@ personal_accaunt_router = Router()
 @personal_accaunt_router.message(F.text.lower() == "личный кабинет")
 @personal_accaunt_router.message(Command("accaunt"))
 async def cmd_accaunt(message: Message):
-    user_info = get_user_info(message.from_user.id)
+    user_info = get_user_info(message.chat.id)
     if not user_info:
         await message.answer(text=START_PHRASE_WITHOUT_TEST, parse_mode="markdown", reply_markup=start_without_test_keyboard)
         return

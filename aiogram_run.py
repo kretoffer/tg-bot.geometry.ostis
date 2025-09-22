@@ -8,6 +8,7 @@ from handlers.handbook import handbook_router
 from handlers.personal_account import personal_accaunt_router
 from handlers.reflection import reflection_router
 from handlers.themes_page import themes_page_router
+from handlers.lessons import lessons_router
 
 
 async def main():
@@ -19,6 +20,7 @@ async def main():
     dp.include_router(personal_accaunt_router)
     dp.include_router(reflection_router)
     dp.include_router(themes_page_router)
+    dp.include_router(lessons_router)
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 

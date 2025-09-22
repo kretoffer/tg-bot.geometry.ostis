@@ -193,3 +193,26 @@ async def get_current_test(user: ScAddr) -> ScAddr:
     if search_results := search_by_template(templ):
         return search_results[0].get("test")
     return ScAddr()
+
+
+def get_user_by_action(action: ScAddr):
+    "return user and user id"
+    templ = ScTemplate()
+    templ.quintuple(
+        action,
+        sc_type.VAR_PERM_POS_ARC,
+        (sc_type.VAR_NODE, "user"),
+        sc_type.VAR_PERM_POS_ARC,
+        ScKeynodes.rrel_index(1)
+    )
+    templ.quintuple(
+        "user",
+        sc_type.VAR_COMMON_ARC,
+        (sc_type.VAR_NODE_LINK, "user_id"),
+        sc_type.VAR_PERM_POS_ARC,
+        ScKeynodes.resolve("nrel_tg_id", sc_type.VAR_NODE_NON_ROLE)
+    )
+    search_result = search_by_template(templ)[0]
+    user = search_result.get("user")
+    user_id = int(get_link_content_data(search_result.get("user_id")))
+    return user, user_id
