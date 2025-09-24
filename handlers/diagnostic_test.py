@@ -30,7 +30,7 @@ async def set_answer(user: ScAddr, test: ScAddr, answer: ScAddr):
 async def cmd_start_diagnostic_test(message: Message):
     user = get_user(message.chat.id)
     if user:
-        await start_diagnostic_test(user)
+        create_action("action_start_diagnostic_test", user)
     else:
         await message.answer("Выберите класс:", reply_markup=reg_classes_keyboard)
 

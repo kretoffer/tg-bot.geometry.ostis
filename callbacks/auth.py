@@ -25,4 +25,4 @@ async def reg_user_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
     )
     search_result = search_by_template(templ)[0]
     user = search_result.get("user")
-    create_action("action_start_test", user)
+    create_action("action_start_diagnostic_test", user)

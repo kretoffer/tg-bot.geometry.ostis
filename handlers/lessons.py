@@ -1,6 +1,6 @@
 from aiogram import Router, F, Bot
 from aiogram.filters import Command
-from aiogram.types import Message, CallbackQuery, InputMediaVideo, InputMediaPhoto
+from aiogram.types import Message, CallbackQuery
 
 from sc_client.models import ScAddr
 
@@ -12,6 +12,7 @@ from config import START_PHRASE_WITHOUT_TEST
 from utils.get_user import check_user_in_sc_machine, get_user
 from utils.create_action import create_action
 from utils.callback_filters import PrefixCallbackFilter
+from utils.send_message_with_content import send_message_with_content
 
 from sc_kpm.utils import get_link_content_data
 
@@ -50,30 +51,8 @@ async def lesson_message(query: CallbackQuery, bot: Bot):
     markup = get_lesson_message_markup(message)
 
     content = get_link_content_data(message)
-    content = content.split(" && ")
-    if len(content) == 1:
-        [content] = content
-        if content.startswith("http"):
-            if content.endswith((".jpg", ".jpeg", ".png")):
-                bot.send_photo(query.message.chat.id, InputMediaPhoto(media=content), reply_markup=markup)
-            elif content.endswith((".mp4", ".mov", ".avi")):
-                bot.send_video(query.message.chat.id, InputMediaVideo(media=content), reply_markup=markup)
-            else:
-                bot.send_message(query.message.chat.id, content, parse_mode="markdown", reply_markup=markup)
-    else:
-        media = []
-        caption = None
-        for el in content:
-            if el.endswith((".jpg", ".jpeg", ".png")):
-                media.append(InputMediaPhoto(media=el, parse_mode="markdown"))
-            elif el.endswith((".mp4", ".mov", ".avi")):
-                media.append(InputMediaVideo(media=el, parse_mode="markdown"))
-            else:
-                caption = el
-        media[-1].caption = caption
-
-        bot.send_media_group(query.message.chat.id, media, reply_markup=markup)
-        query.message.delete()
+    await send_message_with_content(query.message.chat.id, content, bot, markup)
+    await query.message.delete()
 
 
 @lessons_router.callback_query(F.data == "finish-lesson")

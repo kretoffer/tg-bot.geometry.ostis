@@ -15,7 +15,10 @@ from callbacks.test import (
 )
 from callbacks.recomendations import (
     generated_recomendations_for_study_callback,
-    get_lesson_callback
+    get_lesson_callback,
+    generated_recomendations_for_testing_or_solve_task_callback,
+    get_test_callback,
+    get_task_callback
 )
 from callbacks.auth import reg_user_callback
 
@@ -26,7 +29,10 @@ callbacks = {
     ScKeynodes.resolve("action_answered_test_question", sc_type.CONST_NODE): answered_question_callback,
     ScKeynodes.resolve("action_form_theme_recommendations_for_user_to_study", sc_type.CONST_NODE): generated_recomendations_for_study_callback,
     ScKeynodes.resolve("action_get_lesson_on_theme", sc_type.CONST_NODE): get_lesson_callback,
-    ScKeynodes.resolve("action_reg_user", sc_type.CONST_NODE): reg_user_callback
+    ScKeynodes.resolve("action_reg_user", sc_type.CONST_NODE): reg_user_callback,
+    ScKeynodes.resolve("action_form_theme_recommendations_for_user_to_solve_test_or_task", sc_type.CONST_NODE): generated_recomendations_for_testing_or_solve_task_callback,
+    ScKeynodes.resolve("action_form_test_recommendations_for_user", sc_type.CONST_NODE): get_test_callback,
+    ScKeynodes.resolve("action_form_task_recommendations_for_user", sc_type.CONST_NODE): get_task_callback
 }
 
 
