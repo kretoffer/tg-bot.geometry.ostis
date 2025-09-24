@@ -9,7 +9,7 @@ from utils.get_user import get_user_passing_test_history, get_current_test
 from utils.question import question_to_question_object
 from utils.create_action import create_action
 
-from handlers.diagnostic_test import get_last_question
+from utils.tests import get_last_question
 
 from keyboards.diagnostc_test import get_question_keyboard
 

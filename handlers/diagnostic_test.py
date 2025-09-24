@@ -7,26 +7,21 @@ from utils.get_user import get_user, get_current_test
 from utils.create_action import create_action
 
 from sc_client.constants import sc_type
-from sc_client.models import ScAddr, ScTemplate, ScLinkContentType
-from sc_client.client import search_by_template
+from sc_client.models import ScAddr, ScLinkContentType
 
 from sc_kpm.sc_keynodes import ScKeynodes
 from sc_kpm.utils import generate_link
 
 from keyboards.diagnostc_test import reg_classes_keyboard, get_reg_knowledge_level_keyboard
 
+from utils.tests import set_answer
+
+
 diagnostic_test_router = Router()
 
 
-async def set_answer(user: ScAddr, test: ScAddr, answer: ScAddr):
-    "Запись ответа пользователя в БЗ"
-    if not test.is_valid():
-        return
-    create_action("action_answered_test_question", user, test, answer)
-
-
 @diagnostic_test_router.message(F.text.lower() == "пройти тест")
-@diagnostic_test_router.message(Command("test"))
+@diagnostic_test_router.message(Command("diagnostic_test"))
 async def cmd_start_diagnostic_test(message: Message):
     user = get_user(message.chat.id)
     if user:
@@ -53,21 +48,6 @@ async def set_user_kn_level(query: CallbackQuery):
     await query.message.delete()
 
     create_action("action_reg_user", link_user_id, user_class_link, user_name_link, user_kn_level_link)
-
-
-async def get_last_question(passing_test_history: ScAddr) -> ScAddr:
-    if not passing_test_history.is_valid():
-        return ScAddr()
-    templ = ScTemplate()
-    templ.quintuple(
-        passing_test_history,
-        sc_type.VAR_PERM_POS_ARC,
-        (sc_type.VAR_NODE, "question"),
-        sc_type.VAR_PERM_POS_ARC,
-        ScKeynodes.resolve("rrel_last", sc_type.CONST_NODE_ROLE)
-    )
-    question = search_by_template(templ)[0].get("question")
-    return question
 
 
 @diagnostic_test_router.callback_query(PrefixCallbackFilter("test_answer"))

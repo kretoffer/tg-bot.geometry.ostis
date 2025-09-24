@@ -10,6 +10,7 @@ from handlers.reflection import reflection_router
 from handlers.themes_page import themes_page_router
 from handlers.lessons import lessons_router
 from handlers.tests import tests_router
+from handlers.tasks import tasks_router
 
 
 async def main():
@@ -23,6 +24,7 @@ async def main():
     dp.include_router(themes_page_router)
     dp.include_router(lessons_router)
     dp.include_router(tests_router)
+    dp.include_router(tasks_router)
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 
