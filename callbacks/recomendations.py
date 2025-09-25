@@ -2,12 +2,14 @@ from sc_client.models import ScAddr
 
 from sc_kpm.utils.action_utils import get_action_result, get_action_arguments
 
-from utils.get_idtf import get_name_str
+from utils.get_idtf import get_name_str, get_condition_str
 from utils.recomendations import get_recomendate_themes
 from utils.get_user import get_user_by_action
 from utils.create_action import create_action
+from utils.send_message_with_content import send_message_with_content_comp
 
 from keyboards.themes_keyboard import get_theme_keyboard
+from keyboards.tasks import get_task_markup
 
 from callbacks_queue import add_to_queue, QueueCallback
 
@@ -62,4 +64,8 @@ async def get_task_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
 
     result = get_action_result(trg)
 
-    # TODO получение и отправка задачи
+    return # заглушка
+    # TODO получение task: ScAddr
+    condition = get_condition_str(task)
+    markup = get_task_markup(task.value)
+    add_to_queue(QueueCallback(user_id, condition, markup, comp=send_message_with_content_comp))

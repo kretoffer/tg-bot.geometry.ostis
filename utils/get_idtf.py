@@ -14,6 +14,8 @@ def get_name_str(addr: ScAddr) -> ScAddr:
     return get_link_content_data(search_lang_value_by_nrel_identifier(addr, "nrel_name"))
 def get_description_str(addr: ScAddr) -> ScAddr:
     return get_link_content_data(search_lang_value_by_nrel_identifier(addr, "nrel_description"))
+def get_condition_str(addr: ScAddr) -> ScAddr:
+    return get_link_content_data(search_lang_value_by_nrel_identifier(addr, "nrel_condition"))
 
     
 def search_lang_value_by_nrel_identifier(entity_addr: ScAddr, idtf_str: str = "nrel_main_idtf", lang_str: str = "lang_ru") -> ScAddr:
