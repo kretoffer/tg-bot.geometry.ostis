@@ -55,7 +55,7 @@ async def answer_to_question(query: CallbackQuery):
     answer_sc_addr = int(query.data.split(":")[1])
     user = get_user(query.message.chat.id)
     test = await get_current_test(user)
-    answer = await ScAddr(answer_sc_addr)
+    answer = ScAddr(answer_sc_addr)
 
     await set_answer(user, test, answer)
 

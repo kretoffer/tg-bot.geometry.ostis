@@ -18,27 +18,27 @@ def get_condition_str(addr: ScAddr) -> ScAddr:
     return get_link_content_data(search_lang_value_by_nrel_identifier(addr, "nrel_condition"))
 
     
-def search_lang_value_by_nrel_identifier(entity_addr: ScAddr, idtf_str: str = "nrel_main_idtf", lang_str: str = "lang_ru") -> ScAddr:
+def search_lang_value_by_nrel_identifier(entity_addr: ScAddr, idtf_str: str = "nrel_main_idtf", lang_str: str = None) -> ScAddr:
     idtf = ScKeynodes.resolve(
-        idtf_str, sc_type.CONST_NODE_NON_ROLE)
-    lang = ScKeynodes.resolve(lang_str, sc_type.CONST_NODE_CLASS)
+        idtf_str, sc_type.VAR_NODE_NON_ROLE)
 
     template = ScTemplate()
     template.quintuple(
         entity_addr,
         sc_type.VAR_COMMON_ARC,
-        sc_type.VAR_NODE_LINK,
+        (sc_type.VAR_NODE_LINK, "target"),
         sc_type.VAR_PERM_POS_ARC,
-        idtf,
+        idtf
     )
+    if lang_str:
+        lang = ScKeynodes.resolve(lang_str, sc_type.CONST_NODE_CLASS)
+        template.triple(
+            lang,
+            sc_type.VAR_PERM_POS_ARC,
+            "target"
+        )
     search_results = search_by_template(template)
-    if len(search_results) == 1:
-        return search_results[0][2]
-    for result in search_results:
-        idtf = result[2]
-        lang_edge = search_connector(
-            lang, idtf, sc_type.VAR_PERM_POS_ARC)
-        if lang_edge:
-            return idtf
-    return search_element_by_non_role_relation(
-        src=entity_addr, nrel_node=idtf)
+    if search_results:
+        return search_results[0].get("target")
+    return ScAddr(0)
+    

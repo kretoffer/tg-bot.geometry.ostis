@@ -3,6 +3,7 @@ from sc_client.models import ScAddr, ScTemplate
 from sc_client.client import search_by_template
 
 from sc_kpm.sc_keynodes import ScKeynodes
+from sc_kpm.utils import get_link_content_data
 
 from shemes.question import Question
 
@@ -23,10 +24,9 @@ async def question_to_question_object(question: ScAddr) -> Question:
         answer = el.get("answer")
         answers.append((
             answer,
-            search_lang_value_by_nrel_identifier(answer, "nrel_text")
+            get_link_content_data(search_lang_value_by_nrel_identifier(answer, "nrel_text"))
         ))
-        
     return Question(
-        search_lang_value_by_nrel_identifier(question, "nrel_condition"),
+        get_link_content_data(search_lang_value_by_nrel_identifier(question, "nrel_condition")),
         answers
     )
