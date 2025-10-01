@@ -3,12 +3,10 @@ from sc_client.models import ScAddr, ScTemplate
 from sc_client.client import search_by_template
 
 from sc_kpm.sc_keynodes import ScKeynodes
-from sc_kpm.utils import get_link_content_data
 
 from utils.get_user import get_user_passing_test_history, get_current_test
 from utils.question import question_to_question_object
-from utils.create_action import create_action
-
+from utils.get_user import get_user_by_action
 from utils.tests import get_last_question
 
 from keyboards.diagnostc_test import get_question_keyboard
@@ -17,44 +15,26 @@ from callbacks_queue import add_to_queue, QueueCallback
 
 
 async def get_next_question_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
-    templ = ScTemplate()
-    templ.quintuple(
-        trg,
-        sc_type.VAR_PERM_POS_ARC,
-        (sc_type.VAR_NODE, "user"),
-        sc_type.VAR_PERM_POS_ARC,
-        ScKeynodes.rrel_index(1)
-    )
-    templ.quintuple(
-        "user",
-        sc_type.VAR_COMMON_ARC,
-        (sc_type.VAR_NODE_LINK, "user_id"),
-        sc_type.VAR_PERM_POS_ARC,
-        ScKeynodes.resolve("nrel_tg_id", sc_type.VAR_NODE_NON_ROLE)
-    )
-    search_result = search_by_template(templ)[0]
-    user = search_result.get("user")
-    user_id = get_link_content_data(search_result.get("user_id"))
+    user, user_id = get_user_by_action(trg)
 
     test = await get_current_test(user)
     question = await get_last_question(get_user_passing_test_history(user, test))
-    if question.is_valid():
-        question_info = await question_to_question_object(question)
-        await add_to_queue(QueueCallback(user_id, question_info.text, parse_mode="markdown", markup=get_question_keyboard(question_info)))
-    add_to_queue(QueueCallback(user_id=user_id, text="Тест завершен"))
 
-
-async def answered_question_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
     templ = ScTemplate()
     templ.quintuple(
-        trg,
+        question,
         sc_type.VAR_PERM_POS_ARC,
-        (sc_type.VAR_NODE, "user"),
+        (sc_type.VAR_NODE, "question"),
         sc_type.VAR_PERM_POS_ARC,
-        ScKeynodes.rrel_index(1)
+        ScKeynodes.resolve("rrel_test_question", sc_type.VAR_NODE_ROLE)
     )
-    search_result = search_by_template(templ)[0]
-    user = search_result.get("user")
-    test = get_current_test(user)
-    question = get_last_question(get_user_passing_test_history(user), test)
-    create_action("action_get_next_question", user, test, question)
+    question = search_by_template(templ)[0].get("question")
+
+    if question.is_valid():
+        question_info = await question_to_question_object(question)
+        add_to_queue(QueueCallback(user_id, question_info.text, parse_mode="markdown", markup=get_question_keyboard(question_info)))
+
+
+async def finish_test_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
+    user, user_id = get_user_by_action(trg)
+    add_to_queue(QueueCallback(user_id, "Тест завершен"))

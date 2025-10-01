@@ -11,7 +11,7 @@ from sc_kpm.sc_keynodes import ScKeynodes
 
 from callbacks.test import (
     get_next_question_callback,
-    answered_question_callback
+    finish_test_callback
 )
 from callbacks.recomendations import (
     generated_recomendations_for_study_callback,
@@ -26,7 +26,7 @@ from callbacks.auth import reg_user_callback
 callbacks = {
     ScKeynodes.resolve("action_start_test", sc_type.CONST_NODE): get_next_question_callback,
     ScKeynodes.resolve("action_get_next_question", sc_type.CONST_NODE): get_next_question_callback,
-    ScKeynodes.resolve("action_answered_test_question", sc_type.CONST_NODE): answered_question_callback,
+    ScKeynodes.resolve("action_finish_test", sc_type.CONST_NODE): finish_test_callback,
     ScKeynodes.resolve("action_form_theme_recommendations_for_user_to_study", sc_type.CONST_NODE): generated_recomendations_for_study_callback,
     ScKeynodes.resolve("action_get_lesson_on_theme", sc_type.CONST_NODE): get_lesson_callback,
     ScKeynodes.resolve("action_reg_user", sc_type.CONST_NODE): reg_user_callback,
@@ -59,6 +59,7 @@ def get_action_class(action: ScAddr) -> ScAddr:
 def action_event_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
     action_class = get_action_class(trg)
     if action_class in callbacks:
+        logger.info(f"Action: {action_class}")
         asyncio.run(callbacks[action_class](src, connector, trg))
     else:
         logger.warning(f"Unprocessed class of action: {action_class}")
