@@ -24,7 +24,7 @@ lessons_router = Router()
 
 @lessons_router.message(Command("lessons"))
 @lessons_router.message(Command("lesson"))
-@lessons_router.message(F.text.lower() in ("уроки", "урок"))
+@lessons_router.message(lambda msg: msg.text.lower() in ("уроки", "урок"))
 async def lessons_cmd(message: Message):
     if await check_user_in_sc_machine(message.from_user.id):
         await message.answer(START_PHRASE_WITHOUT_TEST, reply_markup=start_without_test_keyboard)
