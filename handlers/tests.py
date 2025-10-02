@@ -23,7 +23,8 @@ tests_router = Router()
 @tests_router.message(Command("test"))
 @tests_router.message(lambda msg: msg.text.lower() in ("тесты", "тест"))
 async def lessons_cmd(message: Message):
-    if await check_user_in_sc_machine(message.from_user.id):
+    user_in_sc = await check_user_in_sc_machine(message.from_user.id)
+    if not user_in_sc:
         await message.answer(START_PHRASE_WITHOUT_TEST, reply_markup=start_without_test_keyboard)
 
     user = get_user(message.from_user.id)

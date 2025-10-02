@@ -29,7 +29,8 @@ class Form(StatesGroup):
 @tasks_router.message(Command("task"))
 @tasks_router.message(lambda msg: msg.text.lower() in ("задачи", "задача"))
 async def tasks_cmd(message: Message):
-    if await check_user_in_sc_machine(message.from_user.id):
+    user_in_sc = await check_user_in_sc_machine(message.from_user.id)
+    if not user_in_sc:
         await message.answer(START_PHRASE_WITHOUT_TEST, reply_markup=start_without_test_keyboard)
 
     user = get_user(message.from_user.id)
