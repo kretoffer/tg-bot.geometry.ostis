@@ -22,8 +22,10 @@ async def get_last_question(passing_test_history: ScAddr) -> ScAddr:
         passing_test_history,
         sc_type.VAR_PERM_POS_ARC,
         (sc_type.VAR_NODE, "question"),
-        sc_type.VAR_PERM_POS_ARC,
+        sc_type.VAR_ACTUAL_TEMP_POS_ARC,
         ScKeynodes.resolve("rrel_last", sc_type.CONST_NODE_ROLE)
     )
-    question = search_by_template(templ)[0].get("question")
-    return question
+    if search_results := search_by_template(templ):
+        question = search_results[0].get("question")
+        return question
+    return ScAddr()

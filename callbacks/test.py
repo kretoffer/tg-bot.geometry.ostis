@@ -19,6 +19,8 @@ async def get_next_question_callback(src: ScAddr, connector: ScAddr, trg: ScAddr
 
     test = await get_current_test(user)
     question = await get_last_question(get_user_passing_test_history(user, test))
+    if not question.is_valid():
+        return 
 
     templ = ScTemplate()
     templ.quintuple(
