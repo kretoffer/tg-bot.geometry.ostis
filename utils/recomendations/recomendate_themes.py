@@ -38,9 +38,9 @@ async def get_recomendate_themes(*, data: str = None, result: ScAddr = None, **k
     bad_themes_set = search_result.get("bad_themes_set")
     other_themes_set = search_result.get("other_themes_set")
 
-    good_themes = list(ScSet(good_themes_set).elements_set)
-    bad_themes = list(ScSet(bad_themes_set).elements_set)
-    other_themes = list(ScSet(other_themes_set).elements_set)
+    good_themes = list(ScSet(set_node=good_themes_set).elements_set)
+    bad_themes = list(ScSet(set_node=bad_themes_set).elements_set)
+    other_themes = list(ScSet(set_node=other_themes_set).elements_set)
 
     themes_recomendation = good_themes + other_themes + bad_themes
     return themes_recomendation
