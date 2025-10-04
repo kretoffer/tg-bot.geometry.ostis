@@ -20,6 +20,10 @@ COMPARATORS = {
     "task-theme": get_recomendate_themes
 }
 
+NAME_COMPARATORS = {
+
+}
+
 
 @themes_page_router.callback_query(PrefixCallbackFilter("themes_page"))
 async def handle_page_callback(query: CallbackQuery):
@@ -32,5 +36,9 @@ async def handle_page_callback(query: CallbackQuery):
         user = get_user(query.message.chat.id)
         themes = await COMPARATORS[prefix](user=user, data=query.data)
     indexes = [theme.value for theme in themes]
-    themes = [get_name_str(theme) for theme in themes]
+    if prefix not in NAME_COMPARATORS:
+        get_name = get_name_str
+    else:
+        NAME_COMPARATORS[prefix]
+    themes = [get_name(theme) for theme in themes]
     await query.message.edit_reply_markup(reply_markup=get_theme_keyboard(prefix, "themes_page", themes, indexes, page=page, page_size=PAGE_SIZE, nav_postfix=postfix))
