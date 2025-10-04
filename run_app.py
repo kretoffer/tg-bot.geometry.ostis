@@ -30,8 +30,11 @@ dp = Dispatcher(storage=MemoryStorage())
 
 
 #                   CALLBACKS
-from callbacks import action_event_callback
+from callbacks import action_event_callback, action_event_no_callback
 bounded_elem_addr = ScKeynodes.resolve("action_finished_successfully", sc_type.CONST_NODE_CLASS)
+bounded_elem_no_addr = ScKeynodes.resolve("action_finished_unsuccessfully", sc_type.CONST_NODE_CLASS)
 event_type = ScEventType.AFTER_GENERATE_OUTGOING_ARC
 event_subscription_params = ScEventSubscriptionParams(bounded_elem_addr, event_type, action_event_callback)
+event_subscription_params_no = ScEventSubscriptionParams(bounded_elem_no_addr, event_type, action_event_no_callback)
 event_subscription = create_elementary_event_subscriptions(event_subscription_params)
+event_subscription_no = create_elementary_event_subscriptions(event_subscription_params_no)

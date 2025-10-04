@@ -16,6 +16,7 @@ from callbacks.test import (
 from callbacks.recomendations import (
     generated_recomendations_for_study_callback,
     get_lesson_callback,
+    get_lesson_no_callback,
     generated_recomendations_for_testing_or_solve_task_callback,
     get_test_callback,
     get_task_callback
@@ -33,6 +34,10 @@ callbacks = {
     ScKeynodes.resolve("action_form_theme_recommendations_for_user_to_solve_test_or_task", sc_type.CONST_NODE): generated_recomendations_for_testing_or_solve_task_callback,
     ScKeynodes.resolve("action_form_test_recommendations_for_user", sc_type.CONST_NODE): get_test_callback,
     ScKeynodes.resolve("action_form_task_recommendations_for_user", sc_type.CONST_NODE): get_task_callback
+}
+
+no_callbacks = {
+    ScKeynodes.resolve("action_get_lesson_on_theme", sc_type.CONST_NODE): get_lesson_no_callback
 }
 
 
@@ -59,7 +64,16 @@ def get_action_class(action: ScAddr) -> ScAddr:
 def action_event_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
     action_class = get_action_class(trg)
     if action_class in callbacks:
-        logger.info(f"Action: {action_class}")
+        logger.info(f"Successfully action: {action_class}")
         asyncio.run(callbacks[action_class](src, connector, trg))
     else:
-        logger.warning(f"Unprocessed class of action: {action_class}")
+        logger.warning(f"Unprocessed class of successfully action: {action_class}")
+
+
+def action_event_no_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
+    action_class = get_action_class(trg)
+    if action_class in no_callbacks:
+        logger.info(f"Unsuccessfully action: {action_class}")
+        asyncio.run(no_callbacks[action_class](src, connector, trg))
+    else:
+        logger.warning(f"Unprocessed class of unsuccessfully action: {action_class}")

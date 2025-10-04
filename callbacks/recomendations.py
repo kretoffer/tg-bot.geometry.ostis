@@ -35,6 +35,12 @@ async def get_lesson_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
     # TODO получение урока, отправка сообщения пользователю с первым сообщением из урока
 
 
+async def get_lesson_no_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
+    _, user_id = get_user_by_action(trg)
+
+    add_to_queue(QueueCallback(user_id=user_id, text="К сожалению не удалось найти уроков по выбранной вами теме"))
+
+
 async def generated_recomendations_for_testing_or_solve_task_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
     user, user_id = get_user_by_action(trg)
 
