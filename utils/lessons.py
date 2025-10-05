@@ -32,12 +32,36 @@ def get_test_for_lesson(lesson: ScAddr) -> ScAddr:
 
 def get_theme_of_lesson(lesson: ScAddr) -> ScAddr:
     templ = ScTemplate()
-    templ.quintuple(
-        (sc_type.VAR_NODE, "theme"),
-        sc_type.VAR_COMMON_ARC,
-        lesson,
+    templ.triple(
+        (sc_type.VAR_NODE_TUPLE, "_lessons_set"),
         sc_type.VAR_PERM_POS_ARC,
-        ScKeynodes.resolve("nrel_lesson", sc_type.VAR_NODE_NON_ROLE)
+        lesson
     )
-    theme = search_by_template(templ)[0].get("theme")
+    templ.quintuple(
+        (sc_type.VAR_NODE, "_theme"),
+        sc_type.VAR_COMMON_ARC,
+        "_lessons_set",
+        sc_type.VAR_PERM_POS_ARC,
+        ScKeynodes.resolve("nrel_lessons", sc_type.VAR_NODE_NON_ROLE)
+    )
+    theme = search_by_template(templ)[0].get("_theme")
     return theme
+
+
+def get_firs_lesson_link(lesson: ScAddr) -> ScAddr:
+    templ = ScTemplate()
+    templ.quintuple(
+        lesson,
+        sc_type.VAR_COMMON_ARC,
+        (sc_type.VAR_NODE_TUPLE, "_set"),
+        sc_type.VAR_PERM_POS_ARC,
+        ScKeynodes.resolve("nrel_lesson_content", sc_type.VAR_NODE_NON_ROLE)
+    )
+    templ.quintuple(
+        "_set",
+        sc_type.VAR_PERM_POS_ARC,
+        (sc_type.VAR_NODE_LINK, "_link"),
+        sc_type.VAR_PERM_POS_ARC,
+        ScKeynodes.rrel_index(1)
+    )
+    return search_by_template(templ)[0].get("_link")

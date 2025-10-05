@@ -13,6 +13,7 @@ from utils.get_user import check_user_in_sc_machine, get_user
 from utils.create_action import create_action
 from utils.callback_filters import PrefixCallbackFilter
 from utils.send_message_with_content import send_message_with_content
+from utils.lessons import get_firs_lesson_link
 
 from sc_kpm.utils import get_link_content_data
 
@@ -56,7 +57,21 @@ async def lesson_message(query: CallbackQuery, bot: Bot):
     await query.message.delete()
 
 
+@lessons_router.callback_query(PrefixCallbackFilter("start-lesson"))
+async def lesson_message(query: CallbackQuery, bot: Bot):
+    lesson_addr = int(query.data.split(":")[1])
+    lesson = ScAddr(lesson_addr)
+
+    message = get_firs_lesson_link(lesson)
+
+    markup = get_lesson_message_markup(message)
+
+    content = get_link_content_data(message)
+    await send_message_with_content(query.message.chat.id, content, bot, markup)
+    await query.message.delete()
+
+
 @lessons_router.callback_query(F.data == "finish-lesson")
 async def start_reflection(query: CallbackQuery):
-    cmd_accaunt(message=query.message)
-    query.message.delete()
+    await cmd_accaunt(message=query.message)
+    await query.message.delete()

@@ -7,7 +7,7 @@ def get_theme_keyboard(prefix: str, nav_prefix: str, themes: list, indexes: list
     page_themes = themes[start:end]
 
     keyboard = [
-        [InlineKeyboardButton(text=theme, callback_data=f"{prefix}:{indexes[themes.index(theme)]}")]
+        [InlineKeyboardButton(text=str(theme), callback_data=f"{prefix}:{indexes[themes.index(theme)]}")]
         for theme in page_themes
     ]
 

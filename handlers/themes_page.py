@@ -6,7 +6,7 @@ from keyboards.themes_keyboard import get_theme_keyboard
 from utils.callback_filters import PrefixCallbackFilter
 from utils.themes import get_themes_list
 from utils.get_idtf import get_name_str
-from utils.recomendations import get_recomendate_themes
+from utils.recomendations import get_recomendate_themes, get_recommendated_lessons
 from utils.get_user import get_user
 
 themes_page_router = Router()
@@ -17,11 +17,12 @@ PAGE_SIZE = 10
 COMPARATORS = {
     "lesson-theme": get_recomendate_themes,
     "test-theme": get_recomendate_themes,
-    "task-theme": get_recomendate_themes
+    "task-theme": get_recomendate_themes,
+    "start-lesson": get_recommendated_lessons
 }
 
 NAME_COMPARATORS = {
-
+    "start-lesson": lambda lesson: lesson.value
 }
 
 
