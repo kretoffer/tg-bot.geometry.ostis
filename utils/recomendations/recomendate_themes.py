@@ -24,18 +24,26 @@ async def get_recomendate_themes(*, data: str = None, result: ScAddr = None, **k
         sc_type.VAR_PERM_POS_ARC,
         (sc_type.VAR_NODE, "struct")
     )
-    for i in ("other_themes", "good_themes"):
-        templ.quintuple(
-            "struct",
-            sc_type.VAR_PERM_POS_ARC,
-            (sc_type.VAR_NODE, f"{i}_set"),
-            sc_type.VAR_PERM_POS_ARC,
-            ScKeynodes.resolve(f"rrel_{i}", sc_type.VAR_NODE_ROLE)
-        )
+    templ.quintuple(
+        "struct",
+        sc_type.VAR_PERM_POS_ARC,
+        (sc_type.VAR_NODE, "other_themes_set"),
+        sc_type.VAR_PERM_POS_ARC,
+        ScKeynodes.resolve("rrel_other_themes", sc_type.VAR_NODE_ROLE)
+    )
+    search_result = search_by_template(templ)[0]
+    other_themes_set = search_result.get("other_themes_set")
+    templ.triple_list = templ.triple_list[:-2]
+    templ.quintuple(
+        "struct",
+        sc_type.VAR_PERM_POS_ARC,
+        (sc_type.VAR_NODE, "good_themes_set"),
+        sc_type.VAR_PERM_POS_ARC,
+        ScKeynodes.resolve("rrel_good_themes", sc_type.VAR_NODE_ROLE)
+    )
 
     search_result = search_by_template(templ)[0]
     good_themes_set = search_result.get("good_themes_set")
-    other_themes_set = search_result.get("other_themes_set")
 
     good_themes = list(ScSet(set_node=good_themes_set).elements_set)
     other_themes = list(ScSet(set_node=other_themes_set).elements_set)
