@@ -8,6 +8,8 @@ from sc_kpm import ScKeynodes
 
 def get_ru_main_identifier(entity_addr: ScAddr) -> ScAddr:
     return search_lang_value_by_nrel_identifier(entity_addr, "nrel_main_idtf", "lang_ru")
+def get_main_identifier(entity_addr: ScAddr) -> ScAddr:
+    return search_lang_value_by_nrel_identifier(entity_addr, "nrel_main_idtf")
 
 
 def get_name_str(addr: ScAddr) -> ScAddr:

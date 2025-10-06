@@ -82,3 +82,12 @@ async def send_solve_to_task(query: CallbackQuery):
     task_addr = int(query.data.split(":")[1])
     task = ScAddr(task_addr)
     # TODO
+
+
+@tasks_router.callback_query(PrefixCallbackFilter("task-recommendations-theme"))
+async def select_theme_test(query: CallbackQuery):
+    theme_addr = int(query.data.split(":")[1])
+    theme = ScAddr(theme_addr)
+    user = get_user(query.message.chat.id)
+
+    create_action("action_form_task_recommendations_for_user", user, theme)

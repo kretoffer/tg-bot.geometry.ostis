@@ -6,9 +6,10 @@ from keyboards.start_keyboards import start_without_test_keyboard
 
 from config import START_PHRASE_WITHOUT_TEST
 
-from utils.get_user import check_user_in_sc_machine, get_user
+from utils.get_user import check_user_in_sc_machine, get_user, get_current_test
 from utils.create_action import create_action
 from utils.callback_filters import PrefixCallbackFilter
+from utils.tests import set_answer
 
 from sc_client.models import ScAddr
 from sc_client.constants import sc_type
@@ -40,6 +41,37 @@ async def select_lesson_theme(query: CallbackQuery):
     theme_addr = int(query.data.split(":")[1])
     theme = ScAddr(theme_addr)
 
+    user = get_user(query.message.chat.id)
+
+    create_action("action_form_test_recommendations_for_user", user, theme)
+
+
+@tests_router.callback_query(PrefixCallbackFilter("test_answer"))
+async def answer_to_question(query: CallbackQuery):
+    answer_sc_addr = int(query.data.split(":")[1])
+    user = get_user(query.message.chat.id)
+    test = await get_current_test(user)
+    answer = ScAddr(answer_sc_addr)
+
+    await set_answer(user, test, answer)
+
+    await query.message.delete()
+
+
+@tests_router.callback_query(PrefixCallbackFilter("test-start"))
+async def start_test(query: CallbackQuery):
+    test_addr = int(query.data.split(":")[1])
+    test = ScAddr(test_addr)
+
+    user = get_user(query.message.chat.id)
+
+    create_action("action_start_test", user, test)
+
+
+@tests_router.callback_query(PrefixCallbackFilter("test-recommendations-theme"))
+async def select_theme_test(query: CallbackQuery):
+    theme_addr = int(query.data.split(":")[1])
+    theme = ScAddr(theme_addr)
     user = get_user(query.message.chat.id)
 
     create_action("action_form_test_recommendations_for_user", user, theme)

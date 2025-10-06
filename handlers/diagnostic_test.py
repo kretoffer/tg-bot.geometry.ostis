@@ -3,7 +3,7 @@ from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery
 
 from utils.callback_filters import PrefixCallbackFilter
-from utils.get_user import get_user, get_current_test
+from utils.get_user import get_user
 from utils.create_action import create_action
 
 from sc_client.constants import sc_type
@@ -13,8 +13,6 @@ from sc_kpm.sc_keynodes import ScKeynodes
 from sc_kpm.utils import generate_link
 
 from keyboards.diagnostc_test import reg_classes_keyboard, get_reg_knowledge_level_keyboard
-
-from utils.tests import set_answer
 
 
 diagnostic_test_router = Router()
@@ -48,15 +46,3 @@ async def set_user_kn_level(query: CallbackQuery):
     await query.message.delete()
 
     create_action("action_reg_user", link_user_id, user_class_link, user_name_link, user_kn_level_link)
-
-
-@diagnostic_test_router.callback_query(PrefixCallbackFilter("test_answer"))
-async def answer_to_question(query: CallbackQuery):
-    answer_sc_addr = int(query.data.split(":")[1])
-    user = get_user(query.message.chat.id)
-    test = await get_current_test(user)
-    answer = ScAddr(answer_sc_addr)
-
-    await set_answer(user, test, answer)
-
-    await query.message.delete()
