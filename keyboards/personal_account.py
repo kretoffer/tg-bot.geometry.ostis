@@ -19,7 +19,7 @@ change_gif_keyboard = InlineKeyboardMarkup(
 
 set_up_kn_level_keyboarf = InlineKeyboardMarkup(
     inline_keyboard=[
-        [InlineKeyboardButton(text="Пройти тест", callback_data="diagnostic-test")]
+        [InlineKeyboardButton(text="Пройти тест", callback_data="diagnostic-test")],
         [InlineKeyboardButton(text="Повысить уровень", callback_data="set-up-kn-level-force")]
     ]
 )
