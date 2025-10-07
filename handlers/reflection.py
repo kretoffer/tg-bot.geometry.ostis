@@ -16,11 +16,12 @@ from keyboards.themes_keyboard import get_theme_keyboard
 from keyboards import get_stop_keyboard
 
 from utils.callback_filters import PrefixCallbackFilter
-from utils.get_user import check_user_in_sc_machine, get_reflection_results
+from utils.get_user import check_user_in_sc_machine
 from utils.themes import get_themes_list, get_well_studied_themes_set, get_worth_studied_themes_set, delete_themes_from_set
 from utils.get_user import get_user
 from utils.get_rating import get_self_rating
 from utils.get_idtf import get_name_str
+from utils.create_action import create_action
 
 from config import START_PHRASE_WITHOUT_TEST
 
@@ -186,11 +187,13 @@ async def stop_add_worth_themes(query: CallbackQuery, bot: Bot):
         await bot.delete_message(query.message.chat.id, messsage_id)
     except (TelegramAPIError, TelegramBadRequest, TelegramNotFound):
         pass
+    user = get_user(query.message.chat.id)
     await query.message.delete()
+    create_action("action_compare_rating_of_progress", user)    
     await bot.send_message(query.message.chat.id, "Самооценка завершена, вы можете перейти в личный кабинет /accaunt")
 
 
 @reflection_router.callback_query(F.data == "reflection")
 async def start_reflection(query: CallbackQuery):
-    reflection_results = await get_reflection_results(query.message.chat.id)
-    await query.message.answer(f"*Результаты рефлексии:*\n\n{reflection_results}", parse_mode="markdown")
+    user = get_user(query.message.chat.id)
+    create_action("action_show_progress", user)

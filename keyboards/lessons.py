@@ -108,7 +108,7 @@ def _get_last_message_keyboard(message: ScAddr, lesson: ScAddr):
         [InlineKeyboardButton(text="Закончить", callback_data="finish-lesson")],
         [InlineKeyboardButton(text="Решить задачу", callback_data=f"task-start:{task.value}")],
         [InlineKeyboardButton(text="Пройти тест", callback_data=f"test-start:{test.value}")],
-        [InlineKeyboardButton(text="Справочник", callback_data=f"handbook_theme:{theme.value}")]
+        #[InlineKeyboardButton(text="Справочник", callback_data=f"handbook_theme:{theme.value}")]
     ]
 
 

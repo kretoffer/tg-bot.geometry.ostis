@@ -22,6 +22,7 @@ from callbacks.recomendations import (
     get_task_callback
 )
 from callbacks.auth import reg_user_callback
+from callbacks.reflection import show_progress_callback
 
 
 callbacks = {
@@ -33,7 +34,8 @@ callbacks = {
     ScKeynodes.resolve("action_reg_user", sc_type.CONST_NODE): reg_user_callback,
     ScKeynodes.resolve("action_form_theme_recommendations_for_user_to_solve_test_or_task", sc_type.CONST_NODE): generated_recomendations_for_testing_or_solve_task_callback,
     ScKeynodes.resolve("action_form_test_recommendations_for_user", sc_type.CONST_NODE): get_test_callback,
-    ScKeynodes.resolve("action_form_task_recommendations_for_user", sc_type.CONST_NODE): get_task_callback
+    ScKeynodes.resolve("action_form_task_recommendations_for_user", sc_type.CONST_NODE): get_task_callback,
+    ScKeynodes.resolve("action_show_progress", sc_type.CONST_NODE): show_progress_callback
 }
 
 no_callbacks = {

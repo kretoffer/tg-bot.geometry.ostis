@@ -20,12 +20,16 @@ diagnostic_test_router = Router()
 
 @diagnostic_test_router.message(F.text.lower() == "пройти тест")
 @diagnostic_test_router.message(Command("diagnostic_test"))
-async def cmd_start_diagnostic_test(message: Message):
-    user = get_user(message.chat.id)
+@diagnostic_test_router.callback_query(F.data == "diagnostic-test")
+async def cmd_start_diagnostic_test(message: Message | CallbackQuery):
+    user = get_user(message.chat.id if isinstance(message, Message) else message.message.chat.id)
     if user:
         create_action("action_start_diagnostic_test", user)
     else:
-        await message.answer("Выберите класс:", reply_markup=reg_classes_keyboard)
+        if isinstance(message, Message):
+            await message.answer("Выберите класс:", reply_markup=reg_classes_keyboard)
+        else:
+            await message.message.edit_text("Выберите класс:", reply_markup=reg_classes_keyboard)
 
 
 @diagnostic_test_router.callback_query(PrefixCallbackFilter("user-reg-class"))

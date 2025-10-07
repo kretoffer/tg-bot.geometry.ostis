@@ -151,7 +151,7 @@ async def check_user_in_sc_machine(user_id: int) -> bool:
     return False
 
 
-async def get_reflection_results(user_id: int):
+async def get_reflection_results(action: ScAddr):
     # TODO Получение результатов рефлексии
     return "Результаты рефлексии"
 
