@@ -4,6 +4,7 @@ from sc_client.client import search_by_template, search_links_by_contents
 
 from sc_kpm import ScKeynodes
 from sc_kpm.utils import get_link_content_data
+from sc_kpm.utils.action_utils import get_action_result
 
 from utils.get_rating import get_self_rating, get_system_rating
 from utils.themes import get_themes_from_set, get_well_studied_themes_set, get_worth_studied_themes_set
@@ -152,8 +153,15 @@ async def check_user_in_sc_machine(user_id: int) -> bool:
 
 
 async def get_reflection_results(action: ScAddr):
-    # TODO Получение результатов рефлексии
-    return "Результаты рефлексии"
+    result = get_action_result(action)
+    templ = ScTemplate()
+    templ.triple(
+        result,
+        sc_type.VAR_PERM_POS_ARC,
+        (sc_type.VAR_NODE_LINK, "_link")
+    )
+    text = get_link_content_data(search_by_template(templ)[0].get("_link"))
+    return text
 
 
 def get_user_passing_test_history(user: ScAddr, test: ScAddr) -> ScAddr:

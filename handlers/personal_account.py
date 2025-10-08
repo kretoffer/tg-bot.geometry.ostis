@@ -4,7 +4,7 @@ from aiogram.types import Message, CallbackQuery
 
 from utils.get_user import get_user_info, get_user
 
-from keyboards.personal_account import personal_account_keyboard, change_gif_keyboard
+from keyboards.personal_account import personal_account_keyboard, change_gif_keyboard, set_up_kn_level_keyboard
 from keyboards.start_keyboards import start_without_test_keyboard
 
 from config import START_PHRASE_WITHOUT_TEST
@@ -36,7 +36,7 @@ async def change_kn_level(query: CallbackQuery):
 async def change_kn_level_up_q(query: CallbackQuery):
     await query.message.edit_text(
         text="Вы желаете пройти тест для определения уровня знаний или повысить сложность принудительно?",
-        reply_markup=change_gif_keyboard
+        reply_markup=set_up_kn_level_keyboard
     )
 
 

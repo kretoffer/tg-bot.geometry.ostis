@@ -35,23 +35,20 @@ triger_phrases = (
 @reflection_router.message(F.text.lower().in_(triger_phrases))
 @reflection_router.callback_query(F.data == "start_reflection")
 async def start_reflection(query: Message | CallbackQuery):
-    if await check_user_in_sc_machine(message.chat.id):
+    message: Message = query if query is Message else query.message
+    if not await check_user_in_sc_machine(message.chat.id):
+        await message.answer(START_PHRASE_WITHOUT_TEST, reply_markup=start_without_test_keyboard)
+        return
 
-        message: Message = query if query is Message else query.message
-        if not await check_user_in_sc_machine(message.chat.id):
-            await message.answer(START_PHRASE_WITHOUT_TEST, reply_markup=start_without_test_keyboard)
-
-        user = get_user(message.chat.id)
-        rating = get_self_rating(user)
-        worth_studied_themes_set = get_worth_studied_themes_set(rating, user)
-        well_studied_themes_set = get_well_studied_themes_set(rating, user)
+    user = get_user(message.chat.id)
+    rating = get_self_rating(user)
+    worth_studied_themes_set = get_worth_studied_themes_set(rating, user)
+    well_studied_themes_set = get_well_studied_themes_set(rating, user)
         
-        delete_themes_from_set(worth_studied_themes_set, rating)
-        delete_themes_from_set(well_studied_themes_set, rating)
+    delete_themes_from_set(worth_studied_themes_set, rating)
+    delete_themes_from_set(well_studied_themes_set, rating)
     
-        await message.answer("Как вы оцениваете свой уровень знаний", reply_markup=select_knowledge_level_keyboard)
-    else:
-        await message.answer(START_PHRASE_WITHOUT_TEST, reply_markup=start_without_test_keyboard, parse_mode="markdown")
+    await message.answer("Как вы оцениваете свой уровень знаний", reply_markup=select_knowledge_level_keyboard)
 
 
 @reflection_router.callback_query(PrefixCallbackFilter("self-kn-level"))
