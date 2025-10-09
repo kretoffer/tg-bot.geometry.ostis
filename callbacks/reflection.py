@@ -14,7 +14,7 @@ async def show_progress_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
 
 async def simplify_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
     user, user_id = get_user_by_action(trg)
-    rating_info = get_rating(get_system_rating(user))
+    rating_info = get_rating(get_system_rating(user), user)
     kn_level = rating_info.knowledge_level
 
     add_to_queue(QueueCallback(user_id=user_id, text=f"Ваш уровень успешно понижен до {kn_level}"))
@@ -28,7 +28,7 @@ async def simplify_callback_no(src: ScAddr, connector: ScAddr, trg: ScAddr):
 
 async def harderfy_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
     user, user_id = get_user_by_action(trg)
-    rating_info = get_rating(get_system_rating(user))
+    rating_info = get_rating(get_system_rating(user), user)
     kn_level = rating_info.knowledge_level
 
     add_to_queue(QueueCallback(user_id=user_id, text=f"Ваш уровень успешно повышен до {kn_level}"))
