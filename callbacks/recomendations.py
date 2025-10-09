@@ -17,6 +17,8 @@ from keyboards.lessons import get_markup_for_start_lesson
 
 from callbacks_queue import add_to_queue, QueueCallback
 
+from shemes.lesson import Lesson
+
 
 async def generated_recomendations_for_study_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
     user, user_id = get_user_by_action(trg)
@@ -38,12 +40,13 @@ async def get_lesson_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
     
     lessons = await get_recommendated_lessons(result=result)
     indexes = [lesson.value for lesson in lessons]
+    names = [Lesson.sc_to_lesson(lesson).name for lesson in lessons]
     if len(lessons) == 1:
         [lesson] = lessons
         markup = get_markup_for_start_lesson(lesson)
         add_to_queue(QueueCallback(user_id, "Найден один урок по вашему запросу", markup=markup))
     else:
-        markup = get_theme_keyboard("start-lesson", "themes_page", indexes, indexes, page=0, page_size=10, nav_postfix=f"start-lesson:{result.value}")
+        markup = get_theme_keyboard("start-lesson", "themes_page", names, indexes, page=0, page_size=10, nav_postfix=f"start-lesson:{result.value}")
         add_to_queue(QueueCallback(user_id, "Найдено несколько уроков по вашему запросу", markup=markup))
 
 

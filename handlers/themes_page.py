@@ -9,6 +9,8 @@ from utils.get_idtf import get_name_str
 from utils.recomendations import get_recomendate_themes, get_recommendated_lessons, get_recomendate_tasks, get_recomendate_tests
 from utils.get_user import get_user
 
+from shemes.lesson import Lesson
+
 themes_page_router = Router()
 
 
@@ -23,7 +25,7 @@ COMPARATORS = {
 }
 
 NAME_COMPARATORS = {
-    "start-lesson": lambda lesson: lesson.value,
+    "start-lesson": lambda lesson: Lesson.sc_to_lesson(lesson).name,
     "test-start": lambda test: test.value,
     
 }
