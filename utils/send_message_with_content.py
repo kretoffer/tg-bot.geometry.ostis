@@ -30,7 +30,7 @@ async def send_message_with_content(chat_id, content: str, bot: Bot, markup: Rep
             elif el.endswith((".mp3", ".ogg", ".wav")):
                 await bot.send_voice(chat_id, voice=el)
             else:
-                caption += el
+                caption += "\n"+el
         if media:
             media[-1].caption = caption
             await bot.send_media_group(chat_id, media, reply_markup=markup)
