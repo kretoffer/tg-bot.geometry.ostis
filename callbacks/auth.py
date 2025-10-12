@@ -12,14 +12,14 @@ async def reg_user_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
     templ.quintuple(
         trg,
         sc_type.VAR_PERM_POS_ARC,
-        (sc_type.VAR_NODE, "user"),
+        (sc_type.VAR_NODE_LINK, "user_id"),
         sc_type.VAR_PERM_POS_ARC,
         ScKeynodes.rrel_index(1)
     )
     templ.quintuple(
-        "user",
+        (sc_type.VAR_NODE, "user"),
         sc_type.VAR_COMMON_ARC,
-        (sc_type.VAR_NODE_LINK, "user_id"),
+        "user_id",
         sc_type.VAR_PERM_POS_ARC,
         ScKeynodes.resolve("nrel_tg_id", sc_type.VAR_NODE_NON_ROLE)
     )
