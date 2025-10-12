@@ -1,11 +1,9 @@
-from sc_client.models import ScAddr, ScTemplate
-from sc_client.client import search_by_template
-from sc_client.constants import sc_type
+from sc_client.models import ScAddr
 
 from sc_kpm.utils.action_utils import get_action_result, get_action_arguments
 from sc_kpm.utils import get_link_content_data
 
-from utils.get_idtf import get_name_str, get_condition_str, get_main_identifier
+from utils.get_idtf import get_main_identifier_str, get_condition_str, get_main_identifier
 from utils.recomendations import get_recomendate_themes, get_recommendated_lessons, get_recomendate_tasks, get_recomendate_tests
 from utils.get_user import get_user_by_action
 from utils.create_action import create_action
@@ -27,7 +25,7 @@ async def generated_recomendations_for_study_callback(src: ScAddr, connector: Sc
 
     themes = await get_recomendate_themes(result=result)
     indexes = [theme.value for theme in themes]
-    themes = [get_name_str(theme) for theme in themes]
+    themes = [get_main_identifier_str(theme) for theme in themes]
 
     markup = get_theme_keyboard("lesson-theme", "themes_page", themes, indexes, page=0, page_size=10, nav_postfix=f"lesson-theme:{result.value}")
     add_to_queue(QueueCallback(user_id=user_id, text="Выберите тему для изучения", markup=markup))
@@ -63,7 +61,7 @@ async def generated_recomendations_for_testing_or_solve_task_callback(src: ScAdd
 
     themes = await get_recomendate_themes(result=result)
     indexes = [theme.value for theme in themes]
-    themes = [get_name_str(theme) for theme in themes]
+    themes = [get_main_identifier_str(theme) for theme in themes]
 
     _type = get_link_content_data(get_main_identifier(get_action_arguments(trg, 2)[1]))
     markup = get_theme_keyboard(f"{_type}-theme", "themes_page", themes, indexes, page=0, page_size=10, nav_postfix=f"{_type}-theme:{result.value}")

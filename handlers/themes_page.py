@@ -5,7 +5,7 @@ from keyboards.themes_keyboard import get_theme_keyboard
 
 from utils.callback_filters import PrefixCallbackFilter
 from utils.themes import get_themes_list
-from utils.get_idtf import get_name_str
+from utils.get_idtf import get_name_str, get_main_identifier_str
 from utils.recomendations import get_recomendate_themes, get_recommendated_lessons, get_recomendate_tasks, get_recomendate_tests
 from utils.get_user import get_user
 
@@ -27,7 +27,12 @@ COMPARATORS = {
 NAME_COMPARATORS = {
     "start-lesson": lambda lesson: Lesson.sc_to_lesson(lesson).name,
     "test-start": lambda test: test.value,
-    
+    "lesson-theme": lambda theme: get_main_identifier_str(theme),
+    "test-recommendations-theme": lambda theme: get_main_identifier_str(theme),
+    "task-recommendations-theme": lambda theme: get_main_identifier_str(theme),
+    "handbook_theme": lambda theme: get_main_identifier_str(theme),
+    "self-worth-theme": lambda theme: get_main_identifier_str(theme),
+    "self-well-theme": lambda theme: get_main_identifier_str(theme),
 }
 
 
@@ -45,6 +50,6 @@ async def handle_page_callback(query: CallbackQuery):
     if prefix not in NAME_COMPARATORS:
         get_name = get_name_str
     else:
-        NAME_COMPARATORS[prefix]
+        get_name = NAME_COMPARATORS[prefix]
     themes = [get_name(theme) for theme in themes]
     await query.message.edit_reply_markup(reply_markup=get_theme_keyboard(prefix, "themes_page", themes, indexes, page=page, page_size=PAGE_SIZE, nav_postfix=postfix))

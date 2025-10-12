@@ -10,6 +10,8 @@ def get_ru_main_identifier(entity_addr: ScAddr) -> ScAddr:
     return search_lang_value_by_nrel_identifier(entity_addr, "nrel_main_idtf", "lang_ru")
 def get_main_identifier(entity_addr: ScAddr) -> ScAddr:
     return search_lang_value_by_nrel_identifier(entity_addr, "nrel_main_idtf")
+def get_main_identifier_str(entity_addr: ScAddr) -> str:
+    return get_link_content_data(get_main_identifier(entity_addr))
 
 
 def get_name_str(addr: ScAddr) -> ScAddr:

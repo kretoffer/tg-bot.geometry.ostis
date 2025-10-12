@@ -8,7 +8,7 @@ from sc_kpm.utils.action_utils import get_action_result
 
 from utils.get_rating import get_self_rating, get_system_rating
 from utils.themes import get_themes_from_set, get_well_studied_themes_set, get_worth_studied_themes_set
-from utils.get_idtf import get_ru_main_identifier, get_name_str, get_description_str
+from utils.get_idtf import get_ru_main_identifier, get_name_str, get_description_str, get_main_identifier_str
 from shemes.user import User, Rating, Achievement
 
 from typing import Optional, List
@@ -60,8 +60,8 @@ def get_rating(rating: ScAddr, user: ScAddr) -> Optional[Rating]:
 
     worth_studied_themes_set = get_worth_studied_themes_set(rating, user)
     well_studied_themes_set = get_well_studied_themes_set(rating, user)
-    worth_studied_themes = [get_name_str(theme) for theme in get_themes_from_set(worth_studied_themes_set)]
-    well_studied_themes = [get_name_str(theme) for theme in get_themes_from_set(well_studied_themes_set)]
+    worth_studied_themes = [get_main_identifier_str(theme) for theme in get_themes_from_set(worth_studied_themes_set)]
+    well_studied_themes = [get_main_identifier_str(theme) for theme in get_themes_from_set(well_studied_themes_set)]
 
 
     return Rating(
