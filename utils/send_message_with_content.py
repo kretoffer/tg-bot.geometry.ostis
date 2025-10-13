@@ -35,7 +35,7 @@ async def send_message_with_content(chat_id, content: str, bot: Bot, markup: Rep
             media[-1].caption = caption
             await bot.send_media_group(chat_id, media, reply_markup=markup)
         else:
-            await bot.send_message(chat_id, caption, parse_mode="markdown", reply_markup=markup)
+            await bot.send_message(chat_id, caption, reply_markup=markup)
 
 
 async def send_message_with_content_comp(bot: Bot, callback: QueueCallback):
