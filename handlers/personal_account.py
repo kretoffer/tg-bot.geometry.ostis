@@ -15,7 +15,7 @@ personal_accaunt_router = Router()
 
 
 @personal_accaunt_router.message(F.text.lower() == "личный кабинет")
-@personal_accaunt_router.message(Command("accaunt"))
+@personal_accaunt_router.message(Command("account"))
 async def cmd_accaunt(message: Message):
     user_info = get_user_info(message.chat.id)
     if not user_info:
