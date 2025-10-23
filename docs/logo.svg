@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="1024"
+   height="1024"
+   viewBox="0 0 270.93333 270.93333"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
+   sodipodi:docname="semantic geometry logo.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="true"
+     inkscape:zoom="0.69842873"
+     inkscape:cx="556.2486"
+     inkscape:cy="703.00659"
+     inkscape:window-width="1876"
+     inkscape:window-height="995"
+     inkscape:window-x="1937"
+     inkscape:window-y="58"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1" />
+  <defs
+     id="defs1">
+    <linearGradient
+       id="swatch5"
+       inkscape:swatch="solid">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop5" />
+    </linearGradient>
+    <color-profile
+       name="AOC-27"
+       xlink:href="file:///home/user/.local/share/icc/edid-9c5dc8f8672abcd671e65b3b91b3baf4.icc"
+       id="color-profile1" />
+  </defs>
+  <path
+     sodipodi:type="star"
+     style="fill:none;fill-opacity:1;stroke:#2878d8;stroke-width:14.6447;stroke-dasharray:351.472, 14.6447;stroke-dashoffset:0;stroke-opacity:1"
+     id="path5"
+     inkscape:flatsided="true"
+     sodipodi:sides="5"
+     sodipodi:cx="85.993622"
+     sodipodi:cy="44.322704"
+     sodipodi:r1="186.62294"
+     sodipodi:r2="148.38049"
+     sodipodi:arg1="0.94415337"
+     sodipodi:arg2="1.5724719"
+     inkscape:rounded="0"
+     inkscape:randomized="0"
+     d="M 195.4347,195.48742 -23.953416,195.11982 -91.398463,-13.64427 86.306322,-142.29997 263.57897,-13.049479 Z"
+     inkscape:transform-center-x="4.7559685"
+     inkscape:transform-center-y="-4.7501501"
+     transform="matrix(0.53642,0,0,0.53576406,88.913132,84.282039)" />
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:110.676px;font-family:'JetBrainsMono Nerd Font';-inkscape-font-specification:'JetBrainsMono Nerd Font';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#184983;fill-opacity:1;stroke:none;stroke-width:20.1753;stroke-dasharray:484.207, 20.1753;stroke-dashoffset:0;stroke-opacity:1"
+     x="67.135071"
+     y="149.45117"
+     id="text23"
+     transform="scale(1.0164323,0.98383335)"><tspan
+       sodipodi:role="line"
+       id="tspan23"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:110.676px;font-family:'JetBrainsMono Nerd Font';-inkscape-font-specification:'JetBrainsMono Nerd Font';fill:#184983;fill-opacity:1;stroke:none;stroke-width:20.1753"
+       x="67.135071"
+       y="149.45117">SG</tspan></text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:35.2778px;line-height:0.8;font-family:Sans;-inkscape-font-specification:Sans;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#184983;fill-opacity:1;stroke:none;stroke-width:9.26042;stroke-dasharray:222.25, 9.26042;stroke-dashoffset:0;stroke-opacity:1"
+     x="52.656879"
+     y="227.72833"
+     id="text24"><tspan
+       sodipodi:role="line"
+       id="tspan24"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:35.2778px;line-height:0.8;font-family:'JetBrainsMonoNL Nerd Font Mono';-inkscape-font-specification:'JetBrainsMonoNL Nerd Font Mono Bold';stroke:none;stroke-width:9.26042"
+       x="52.656879"
+       y="227.72833">Semantic</tspan><tspan
+       sodipodi:role="line"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:35.2778px;line-height:0.8;font-family:'JetBrainsMonoNL Nerd Font Mono';-inkscape-font-specification:'JetBrainsMonoNL Nerd Font Mono Bold';stroke:none;stroke-width:9.26042"
+       x="52.656879"
+       y="255.95058"
+       id="tspan25">Geometry</tspan></text>
+</svg>
