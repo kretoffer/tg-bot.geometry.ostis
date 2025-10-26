@@ -6,6 +6,7 @@ personal_account_keyboard = InlineKeyboardMarkup(
         [InlineKeyboardButton(text="Оценить свои знания", callback_data="start_reflection")],
         [InlineKeyboardButton(text="Рефлексия", callback_data="reflection")],
         [InlineKeyboardButton(text="Изменить сложность", callback_data="change-dif")],
+        [InlineKeyboardButton(text="Изменить информацию о себе", callback_data="change-info")]
         #[InlineKeyboardButton(text="Достижения", callback_data="achievements")]
     ]
 )
