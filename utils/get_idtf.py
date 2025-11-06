@@ -1,29 +1,29 @@
-from sc_client.models import ScAddr, ScTemplate
-from sc_client.constants import sc_type
-from sc_client.client import search_by_template
+from sc_async_client.models import ScAddr, ScTemplate
+from sc_async_client.constants import sc_type
+from sc_async_client.client import search_by_template
 
-from sc_kpm.utils import search_element_by_non_role_relation, search_connector, get_link_content_data
-from sc_kpm import ScKeynodes
-
-
-def get_ru_main_identifier(entity_addr: ScAddr) -> ScAddr:
-    return search_lang_value_by_nrel_identifier(entity_addr, "nrel_main_idtf", "lang_ru")
-def get_main_identifier(entity_addr: ScAddr) -> ScAddr:
-    return search_lang_value_by_nrel_identifier(entity_addr, "nrel_main_idtf")
-def get_main_identifier_str(entity_addr: ScAddr) -> str:
-    return get_link_content_data(get_main_identifier(entity_addr))
+from sc_async_kpm.utils import get_link_content_data
+from sc_async_kpm import ScKeynodes
 
 
-def get_name_str(addr: ScAddr) -> ScAddr:
-    return get_link_content_data(search_lang_value_by_nrel_identifier(addr, "nrel_name"))
-def get_description_str(addr: ScAddr) -> ScAddr:
-    return get_link_content_data(search_lang_value_by_nrel_identifier(addr, "nrel_description"))
-def get_condition_str(addr: ScAddr) -> ScAddr:
-    return get_link_content_data(search_lang_value_by_nrel_identifier(addr, "nrel_condition"))
+async def get_ru_main_identifier(entity_addr: ScAddr) -> ScAddr:
+    return await search_lang_value_by_nrel_identifier(entity_addr, "nrel_main_idtf", "lang_ru")
+async def get_main_identifier(entity_addr: ScAddr) -> ScAddr:
+    return await search_lang_value_by_nrel_identifier(entity_addr, "nrel_main_idtf")
+async def get_main_identifier_str(entity_addr: ScAddr) -> str:
+    return await get_link_content_data(await get_main_identifier(entity_addr))
+
+
+async def get_name_str(addr: ScAddr) -> ScAddr:
+    return await get_link_content_data(await search_lang_value_by_nrel_identifier(addr, "nrel_name"))
+async def get_description_str(addr: ScAddr) -> ScAddr:
+    return await get_link_content_data(await search_lang_value_by_nrel_identifier(addr, "nrel_description"))
+async def get_condition_str(addr: ScAddr) -> ScAddr:
+    return await get_link_content_data(await search_lang_value_by_nrel_identifier(addr, "nrel_condition"))
 
     
-def search_lang_value_by_nrel_identifier(entity_addr: ScAddr, idtf_str: str = "nrel_main_idtf", lang_str: str = None) -> ScAddr:
-    idtf = ScKeynodes.resolve(
+async def search_lang_value_by_nrel_identifier(entity_addr: ScAddr, idtf_str: str = "nrel_main_idtf", lang_str: str = None) -> ScAddr:
+    idtf = await ScKeynodes.resolve(
         idtf_str, sc_type.VAR_NODE_NON_ROLE)
 
     template = ScTemplate()
@@ -35,13 +35,13 @@ def search_lang_value_by_nrel_identifier(entity_addr: ScAddr, idtf_str: str = "n
         idtf
     )
     if lang_str:
-        lang = ScKeynodes.resolve(lang_str, sc_type.CONST_NODE_CLASS)
+        lang = await ScKeynodes.resolve(lang_str, sc_type.CONST_NODE_CLASS)
         template.triple(
             lang,
             sc_type.VAR_PERM_POS_ARC,
             "target"
         )
-    search_results = search_by_template(template)
+    search_results = await search_by_template(template)
     if search_results:
         return search_results[0].get("target")
     return ScAddr(0)

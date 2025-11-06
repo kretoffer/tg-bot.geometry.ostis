@@ -11,20 +11,20 @@ from config import START_PHRASE_WITHOUT_TEST
 
 from utils.create_action import create_action
 
-personal_accaunt_router = Router()
+personal_account_router = Router()
 
 
-@personal_accaunt_router.message(F.text.lower() == "личный кабинет")
-@personal_accaunt_router.message(Command("account"))
-async def cmd_accaunt(message: Message):
-    user_info = get_user_info(message.chat.id)
+@personal_account_router.message(F.text.lower() == "личный кабинет")
+@personal_account_router.message(Command("account"))
+async def cmd_account(message: Message):
+    user_info = await get_user_info(message.chat.id)
     if not user_info:
         await message.answer(text=START_PHRASE_WITHOUT_TEST, parse_mode="markdown", reply_markup=start_without_test_keyboard)
         return
     await message.answer(str(user_info), parse_mode="markdown", reply_markup=personal_account_keyboard)
 
 
-@personal_accaunt_router.callback_query(F.data == "change-dif")
+@personal_account_router.callback_query(F.data == "change-dif")
 async def change_kn_level(query: CallbackQuery):
     await query.message.edit_text(
         text="Вы хотите повысить или понизить сложность?",
@@ -32,7 +32,7 @@ async def change_kn_level(query: CallbackQuery):
     )
 
 
-@personal_accaunt_router.callback_query(F.data == "set-up-kn-level")
+@personal_account_router.callback_query(F.data == "set-up-kn-level")
 async def change_kn_level_up_q(query: CallbackQuery):
     await query.message.edit_text(
         text="Вы желаете пройти тест для определения уровня знаний или повысить сложность принудительно?",
@@ -40,13 +40,13 @@ async def change_kn_level_up_q(query: CallbackQuery):
     )
 
 
-@personal_accaunt_router.callback_query(F.data == "set-up-kn-level-force")
+@personal_account_router.callback_query(F.data == "set-up-kn-level-force")
 async def change_kn_level_up(query: CallbackQuery):
-    user = get_user(query.message.chat.id)
-    create_action("action_complicate_difficulty", user)
+    user = await get_user(query.message.chat.id)
+    await create_action("action_complicate_difficulty", user)
 
 
-@personal_accaunt_router.callback_query(F.data == "set-down-kn-level")
+@personal_account_router.callback_query(F.data == "set-down-kn-level")
 async def change_kn_level_down(query: CallbackQuery):
-    user = get_user(query.message.chat.id)
-    create_action("action_simplify_difficulty", user)
+    user = await get_user(query.message.chat.id)
+    await create_action("action_simplify_difficulty", user)

@@ -11,10 +11,10 @@ from utils.create_action import create_action
 from utils.callback_filters import PrefixCallbackFilter
 from utils.tests import set_answer
 
-from sc_client.models import ScAddr
-from sc_client.constants import sc_type
+from sc_async_client.models import ScAddr
+from sc_async_client.constants import sc_type
 
-from sc_kpm.sc_keynodes import ScKeynodes
+from sc_async_kpm.sc_keynodes import ScKeynodes
 
 
 tests_router = Router()
@@ -28,11 +28,11 @@ async def lessons_cmd(message: Message):
     if not user_in_sc:
         await message.answer(START_PHRASE_WITHOUT_TEST, reply_markup=start_without_test_keyboard)
 
-    user = get_user(message.from_user.id)
-    create_action(
+    user = await get_user(message.from_user.id)
+    await create_action(
         "action_form_theme_recommendations_for_user_to_solve_test_or_task",
         user,
-        ScKeynodes.resolve("test_recommendations", sc_type.VAR_NODE)
+        await ScKeynodes.resolve("test_recommendations", sc_type.VAR_NODE)
     )
 
 
@@ -41,15 +41,15 @@ async def select_lesson_theme(query: CallbackQuery):
     theme_addr = int(query.data.split(":")[1])
     theme = ScAddr(theme_addr)
 
-    user = get_user(query.message.chat.id)
+    user = await get_user(query.message.chat.id)
 
-    create_action("action_form_test_recommendations_for_user", user, theme)
+    await create_action("action_form_test_recommendations_for_user", user, theme)
 
 
 @tests_router.callback_query(PrefixCallbackFilter("test_answer"))
 async def answer_to_question(query: CallbackQuery):
     answer_sc_addr = int(query.data.split(":")[1])
-    user = get_user(query.message.chat.id)
+    user = await get_user(query.message.chat.id)
     test = await get_current_test(user)
     answer = ScAddr(answer_sc_addr)
 
@@ -63,15 +63,15 @@ async def start_test(query: CallbackQuery):
     test_addr = int(query.data.split(":")[1])
     test = ScAddr(test_addr)
 
-    user = get_user(query.message.chat.id)
+    user = await get_user(query.message.chat.id)
 
-    create_action("action_start_test", user, test)
+    await create_action("action_start_test", user, test)
 
 
 @tests_router.callback_query(PrefixCallbackFilter("test-recommendations-theme"))
 async def select_theme_test(query: CallbackQuery):
     theme_addr = int(query.data.split(":")[1])
     theme = ScAddr(theme_addr)
-    user = get_user(query.message.chat.id)
+    user = await get_user(query.message.chat.id)
 
-    create_action("action_form_test_recommendations_for_user", user, theme)
+    await create_action("action_form_test_recommendations_for_user", user, theme)

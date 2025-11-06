@@ -22,8 +22,8 @@ platformdirs==4.5.0
 pluggy==1.6.0
 pre_commit==4.3.0
 propcache==0.3.2
-py-sc-client==0.4.0
-py-sc-kpm==0.4.0
+py-sc-async-client @ file:///home/user/dist/py_sc_async_client
+py-sc-async-kpm @ file:///home/user/dist/py_sc_async_kpm
 pydantic==2.11.7
 pydantic_core==2.33.2
 Pygments==2.19.2
@@ -36,4 +36,5 @@ typing-inspection==0.4.1
 typing_extensions==4.15.0
 virtualenv==20.35.3
 websocket-client==1.8.0
+websockets==15.0.1
 yarl==1.20.1

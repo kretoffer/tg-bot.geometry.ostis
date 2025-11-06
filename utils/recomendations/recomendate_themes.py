@@ -1,9 +1,9 @@
-from sc_client.models import ScAddr, ScTemplate
-from sc_client.constants import sc_type
-from sc_client.client import search_by_template
+from sc_async_client.models import ScAddr, ScTemplate
+from sc_async_client.constants import sc_type
+from sc_async_client.client import search_by_template
 
-from sc_kpm.sc_keynodes import ScKeynodes
-from sc_kpm.sc_sets import ScSet
+from sc_async_kpm.sc_keynodes import ScKeynodes
+from sc_async_kpm.sc_sets import ScSet
 
 from typing import List
 
@@ -29,9 +29,9 @@ async def get_recomendate_themes(*, data: str = None, result: ScAddr = None, **k
         sc_type.VAR_PERM_POS_ARC,
         (sc_type.VAR_NODE, "other_themes_set"),
         sc_type.VAR_PERM_POS_ARC,
-        ScKeynodes.resolve("rrel_other_themes", sc_type.VAR_NODE_ROLE)
+        await ScKeynodes.resolve("rrel_other_themes", sc_type.VAR_NODE_ROLE)
     )
-    search_result = search_by_template(templ)[0]
+    search_result = (await search_by_template(templ))[0]
     other_themes_set = search_result.get("other_themes_set")
     templ.triple_list = templ.triple_list[:-2]
     templ.quintuple(
@@ -39,14 +39,14 @@ async def get_recomendate_themes(*, data: str = None, result: ScAddr = None, **k
         sc_type.VAR_PERM_POS_ARC,
         (sc_type.VAR_NODE, "good_themes_set"),
         sc_type.VAR_PERM_POS_ARC,
-        ScKeynodes.resolve("rrel_good_themes", sc_type.VAR_NODE_ROLE)
+        await ScKeynodes.resolve("rrel_good_themes", sc_type.VAR_NODE_ROLE)
     )
 
-    search_result = search_by_template(templ)[0]
+    search_result = (await search_by_template(templ))[0]
     good_themes_set = search_result.get("good_themes_set")
 
-    good_themes = list(ScSet(set_node=good_themes_set).elements_set)
-    other_themes = list(ScSet(set_node=other_themes_set).elements_set)
+    good_themes = list(await (await ScSet.create(set_node=good_themes_set)).get_elements_set())
+    other_themes = list(await (await ScSet.create(set_node=other_themes_set)).get_elements_set())
 
     themes_recomendation = good_themes + other_themes
 
@@ -55,12 +55,12 @@ async def get_recomendate_themes(*, data: str = None, result: ScAddr = None, **k
         sc_type.VAR_PERM_POS_ARC,
         (sc_type.VAR_NODE, "bad_themes_set"),
         sc_type.VAR_PERM_POS_ARC,
-        ScKeynodes.resolve("rrel_bad_themes", sc_type.VAR_NODE_ROLE)
+        await ScKeynodes.resolve("rrel_bad_themes", sc_type.VAR_NODE_ROLE)
     )
 
-    if search_results := search_by_template(templ):
+    if search_results := await search_by_template(templ):
         bad_themes_set = search_results[0].get("bad_themes_set")
-        bad_themes = list(ScSet(set_node=bad_themes_set).elements_set)
+        bad_themes = list(await (await ScSet.create(set_node=bad_themes_set)).get_elements_set())
         themes_recomendation += bad_themes
 
     return themes_recomendation

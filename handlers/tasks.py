@@ -12,10 +12,10 @@ from utils.get_user import check_user_in_sc_machine, get_user
 from utils.create_action import create_action
 from utils.callback_filters import PrefixCallbackFilter
 
-from sc_client.models import ScAddr
-from sc_client.constants import sc_type
+from sc_async_client.models import ScAddr
+from sc_async_client.constants import sc_type
 
-from sc_kpm.sc_keynodes import ScKeynodes
+from sc_async_kpm.sc_keynodes import ScKeynodes
 
 
 tasks_router = Router()
@@ -33,11 +33,11 @@ async def tasks_cmd(message: Message):
     if not user_in_sc:
         await message.answer(START_PHRASE_WITHOUT_TEST, reply_markup=start_without_test_keyboard)
 
-    user = get_user(message.from_user.id)
-    create_action(
+    user = await get_user(message.from_user.id)
+    await create_action(
         "action_form_theme_recommendations_for_user_to_solve_test_or_task",
         user,
-        ScKeynodes.resolve("task_recommendations", sc_type.VAR_NODE)
+        await ScKeynodes.resolve("task_recommendations", sc_type.VAR_NODE)
     )
 
 
@@ -46,9 +46,9 @@ async def select_lesson_theme(query: CallbackQuery):
     theme_addr = int(query.data.split(":")[1])
     theme = ScAddr(theme_addr)
 
-    user = get_user(query.message.chat.id)
+    user = await get_user(query.message.chat.id)
 
-    create_action("action_form_task_recommendations_for_user", user, theme)
+    await create_action("action_form_task_recommendations_for_user", user, theme)
 
 
 @tasks_router.callback_query(PrefixCallbackFilter("answer2task"))
@@ -88,6 +88,6 @@ async def send_solve_to_task(query: CallbackQuery):
 async def select_theme_test(query: CallbackQuery):
     theme_addr = int(query.data.split(":")[1])
     theme = ScAddr(theme_addr)
-    user = get_user(query.message.chat.id)
+    user = await get_user(query.message.chat.id)
 
-    create_action("action_form_task_recommendations_for_user", user, theme)
+    await create_action("action_form_task_recommendations_for_user", user, theme)

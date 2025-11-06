@@ -1,12 +1,12 @@
 from dataclasses import dataclass, field
 from typing import List
 
-from sc_client.models import ScAddr, ScTemplate
-from sc_client.constants import sc_type
-from sc_client.client import search_by_template
+from sc_async_client.models import ScAddr, ScTemplate
+from sc_async_client.constants import sc_type
+from sc_async_client.client import search_by_template
 
-from sc_kpm.sc_keynodes import ScKeynodes
-from sc_kpm.utils import get_link_content_data
+from sc_async_kpm.sc_keynodes import ScKeynodes
+from sc_async_kpm.utils import get_link_content_data
 
 
 @dataclass
@@ -31,17 +31,17 @@ class Lesson:
 
 
     @classmethod
-    def sc_to_lesson(cls, addr: ScAddr):
+    async def sc_to_lesson(cls, addr: ScAddr):
         templ = ScTemplate()
         templ.quintuple(
             addr,
             sc_type.VAR_COMMON_ARC,
             (sc_type.VAR_NODE_LINK, "_description"),
             sc_type.VAR_PERM_POS_ARC,
-            ScKeynodes.resolve("nrel_description", sc_type.CONST_NODE_NON_ROLE)
+            await ScKeynodes.resolve("nrel_description", sc_type.CONST_NODE_NON_ROLE)
         )
-        if search_results := search_by_template(templ):
-            description = get_link_content_data(search_results[0].get("_description"))
+        if search_results := await search_by_template(templ):
+            description = await get_link_content_data(search_results[0].get("_description"))
         else:
             description = ""
         templ = ScTemplate()
@@ -51,7 +51,7 @@ class Lesson:
             addr
         )
         templ.triple(
-            ScKeynodes.resolve("concept_content_type", sc_type.VAR_NODE_CLASS),
+            await ScKeynodes.resolve("concept_content_type", sc_type.VAR_NODE_CLASS),
             sc_type.VAR_PERM_POS_ARC,
             "_type"
         )
@@ -60,11 +60,11 @@ class Lesson:
             sc_type.VAR_COMMON_ARC,
             (sc_type.VAR_NODE_LINK, "_name"),
             sc_type.VAR_PERM_POS_ARC,
-            ScKeynodes.resolve("nrel_main_idtf", sc_type.CONST_NODE_NON_ROLE)
+            await ScKeynodes.resolve("nrel_main_idtf", sc_type.CONST_NODE_NON_ROLE)
         )
-        if search_results := search_by_template(templ):
+        if search_results := await search_by_template(templ):
             return Lesson(
-                get_link_content_data(search_results[0].get("_name")),
+                await get_link_content_data(search_results[0].get("_name")),
                 description
             )
         return Lesson("Урок", description)

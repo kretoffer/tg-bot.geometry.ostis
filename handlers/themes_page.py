@@ -11,6 +11,8 @@ from utils.get_user import get_user
 
 from shemes.lesson import Lesson
 
+from sc_async_client.models import ScAddr
+
 themes_page_router = Router()
 
 
@@ -24,9 +26,16 @@ COMPARATORS = {
     "test-start": get_recomendate_tests
 }
 
+async def get_value(addr: ScAddr) -> int:
+    return addr.value
+
+async def get_lesson_name(addr: ScAddr) -> str:
+    lesson = await Lesson.sc_to_lesson(lesson)
+    return lesson.name
+
 NAME_COMPARATORS = {
-    "start-lesson": lambda lesson: Lesson.sc_to_lesson(lesson).name,
-    "test-start": lambda test: test.value,
+    "start-lesson": lambda lesson: get_lesson_name(lesson),
+    "test-start": lambda test: get_value(test),
     "lesson-theme": lambda theme: get_main_identifier_str(theme),
     "test-recommendations-theme": lambda theme: get_main_identifier_str(theme),
     "task-recommendations-theme": lambda theme: get_main_identifier_str(theme),
@@ -51,5 +60,5 @@ async def handle_page_callback(query: CallbackQuery):
         get_name = get_name_str
     else:
         get_name = NAME_COMPARATORS[prefix]
-    themes = [get_name(theme) for theme in themes]
+    themes = [await get_name(theme) for theme in themes]
     await query.message.edit_reply_markup(reply_markup=get_theme_keyboard(prefix, "themes_page", themes, indexes, page=page, page_size=PAGE_SIZE, nav_postfix=postfix))

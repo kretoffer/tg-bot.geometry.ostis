@@ -1,9 +1,9 @@
-from sc_client.models import ScAddr, ScTemplate
-from sc_client.constants import sc_type
-from sc_client.client import search_by_template
+from sc_async_client.models import ScAddr, ScTemplate
+from sc_async_client.constants import sc_type
+from sc_async_client.client import search_by_template
 
-from sc_kpm.sc_keynodes import ScKeynodes
-from sc_kpm.sc_sets import ScSet
+from sc_async_kpm.sc_keynodes import ScKeynodes
+from sc_async_kpm.sc_sets import ScSet
 
 from typing import List, Literal
 
@@ -30,17 +30,17 @@ async def _get_recomendate_tests_tasks(data: str = None, result: ScAddr = None, 
             sc_type.VAR_COMMON_ARC,
             (sc_type.VAR_NODE, f"{i}_set"),
             sc_type.VAR_PERM_POS_ARC,
-            ScKeynodes.resolve(f"nrel_{i}", sc_type.VAR_NODE_NON_ROLE)
+            await ScKeynodes.resolve(f"nrel_{i}", sc_type.VAR_NODE_NON_ROLE)
         )
 
-    search_result = search_by_template(templ)[0]
+    search_result = (await search_by_template(templ))[0]
     good_tests_set = search_result.get(f"good_{_type}_set")
     other_tests_set = search_result.get(f"other_{_type}_set")
     bad_tests_set = search_result.get(f"bad_{_type}_set")
 
-    good_tests = list(ScSet(set_node=good_tests_set).elements_set)
-    other_tests = list(ScSet(set_node=other_tests_set).elements_set)
-    bad_tests = list(ScSet(set_node=bad_tests_set).elements_set)
+    good_tests = list(await (await ScSet.create(set_node=good_tests_set)).get_elements_set())
+    other_tests = list(await (await ScSet.create(set_node=other_tests_set)).get_elements_set())
+    bad_tests = list(await (await ScSet.create(set_node=bad_tests_set)).get_elements_set())
 
     themes_recomendation = good_tests + other_tests + bad_tests
 
