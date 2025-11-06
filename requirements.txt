@@ -22,8 +22,8 @@ platformdirs==4.5.0
 pluggy==1.6.0
 pre_commit==4.3.0
 propcache==0.3.2
-py-sc-async-client @ file:///home/user/dist/py_sc_async_client
-py-sc-async-kpm @ file:///home/user/dist/py_sc_async_kpm
+py-sc-async-client @ git+https://github.com/kretoffer/py_sc_async_client.git@ca65cbac719e3939461f53037b11717e9589d587
+py-sc-async-kpm @ git+https://github.com/kretoffer/py_sc_async_kpm.git@fcd8fea4d779ee0bbbcac503a7ea5b3c5cff292b
 pydantic==2.11.7
 pydantic_core==2.33.2
 Pygments==2.19.2

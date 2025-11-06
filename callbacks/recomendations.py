@@ -7,13 +7,12 @@ from utils.get_idtf import get_main_identifier_str, get_condition_str, get_main_
 from utils.recomendations import get_recomendate_themes, get_recommendated_lessons, get_recomendate_tasks, get_recomendate_tests
 from utils.get_user import get_user_by_action
 from utils.create_action import create_action
-from utils.send_message_with_content import send_message_with_content_comp
 
 from keyboards.themes_keyboard import get_theme_keyboard
 from keyboards.tasks import get_task_markup
 from keyboards.lessons import get_markup_for_start_lesson
 
-from callbacks_queue import add_to_queue, QueueCallback
+from create_bot import bot
 
 from shemes.lesson import Lesson
 
@@ -28,7 +27,7 @@ async def generated_recomendations_for_study_callback(src: ScAddr, connector: Sc
     themes = [await get_main_identifier_str(theme) for theme in themes]
 
     markup = get_theme_keyboard("lesson-theme", "themes_page", themes, indexes, page=0, page_size=10, nav_postfix=f"lesson-theme:{result.value}")
-    add_to_queue(QueueCallback(user_id=user_id, text="Выберите тему для изучения", markup=markup))
+    await bot.send_message(chat_id=user_id, text="Выберите тему для изучения", reply_markup=markup)
 
 
 async def get_lesson_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
@@ -42,16 +41,16 @@ async def get_lesson_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
     if len(lessons) == 1:
         [lesson] = lessons
         markup = await get_markup_for_start_lesson(lesson)
-        add_to_queue(QueueCallback(user_id, "Найден один урок по вашему запросу", markup=markup))
+        await bot.send_message(chat_id=user_id, text="Найден один урок по вашему запросу", reply_markup=markup)
     else:
         markup = get_theme_keyboard("start-lesson", "themes_page", names, indexes, page=0, page_size=10, nav_postfix=f"start-lesson:{result.value}")
-        add_to_queue(QueueCallback(user_id, "Найдено несколько уроков по вашему запросу", markup=markup))
+        await bot.send_message(chat_id=user_id, text="Найдено несколько уроков по вашему запросу", reply_markup=markup)
 
 
 async def get_lesson_no_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
     _, user_id = await get_user_by_action(trg)
 
-    add_to_queue(QueueCallback(user_id=user_id, text="К сожалению не удалось найти уроков по выбранной вами теме"))
+    await bot.send_message(chat_id=user_id, text="К сожалению не удалось найти уроков по выбранной вами теме")
 
 
 async def generated_recomendations_for_testing_or_solve_task_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
@@ -65,7 +64,7 @@ async def generated_recomendations_for_testing_or_solve_task_callback(src: ScAdd
 
     _type = await get_link_content_data(await get_main_identifier((await get_action_arguments(trg, 2))[1]))
     markup = get_theme_keyboard(f"{_type}-theme", "themes_page", themes, indexes, page=0, page_size=10, nav_postfix=f"{_type}-theme:{result.value}")
-    add_to_queue(QueueCallback(user_id=user_id, text="Выберите тему", markup=markup))
+    await bot.send_message(chat_id=user_id, text="Выберите тему", reply_markup=markup)
 
 
 async def get_test_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
@@ -80,7 +79,7 @@ async def get_test_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
         await create_action("action_start_test", user, test)
     else:
         markup = get_theme_keyboard("test-start", "themes_page", indexes, indexes, page=0, page_size=10, nav_postfix=f"test-start:{result.value}")
-        add_to_queue(QueueCallback(user_id, "Найдено несколько тестов по вашему запросу", markup=markup))
+        await bot.send_message(chat_id=user_id, text="Найдено несколько тестов по вашему запросу", reply_markup=markup)
 
 
 async def get_task_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
@@ -92,4 +91,3 @@ async def get_task_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
     # TODO получение task: ScAddr
     condition = await get_condition_str(task)
     markup = await get_task_markup(task.value)
-    add_to_queue(QueueCallback(user_id, condition, markup, comp=send_message_with_content_comp))

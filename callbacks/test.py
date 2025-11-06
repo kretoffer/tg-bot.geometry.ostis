@@ -13,7 +13,7 @@ from utils.tests import get_last_question
 
 from keyboards.diagnostc_test import get_question_keyboard
 
-from callbacks_queue import add_to_queue, QueueCallback
+from create_bot import bot
 
 
 async def get_next_question_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
@@ -36,7 +36,7 @@ async def get_next_question_callback(src: ScAddr, connector: ScAddr, trg: ScAddr
 
     if question.is_valid():
         question_info = await question_to_question_object(question)
-        add_to_queue(QueueCallback(user_id, question_info.text, parse_mode="markdown", markup=get_question_keyboard(question_info)))
+        await bot.send_message(chat_id=user_id, text=question_info.text, parse_mode="markdown", reply_markup=get_question_keyboard(question_info))
 
 
 async def finish_test_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
@@ -56,4 +56,4 @@ async def finish_test_callback(src: ScAddr, connector: ScAddr, trg: ScAddr):
         await ScKeynodes.resolve("nrel_main_idtf", sc_type.CONST_NODE_NON_ROLE)
     )
     level = (await get_link_content_data((await search_by_template(templ))[0].get("_link"))).split()[0]
-    add_to_queue(QueueCallback(user_id, f"Тест завершен\nРезультат: {level}"))
+    await bot.send_message(chat_id=user_id, text=f"Тест завершен\nРезультат: {level}")

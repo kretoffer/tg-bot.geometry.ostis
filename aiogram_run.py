@@ -15,8 +15,6 @@ from handlers.change_info import change_info_router
 
 
 async def main():
-    from callbacks_queue import queue_worker
-    asyncio.create_task(queue_worker())
     dp.include_router(start_router)
     dp.include_router(diagnostic_test_router)
     dp.include_router(handbook_router)
